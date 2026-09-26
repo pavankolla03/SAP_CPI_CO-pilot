@@ -1,0 +1,9 @@
+{
+  "pattern": "batch_orders",
+  "title": "Process orders by ID",
+  "package_id": "RelayAcceptance20260915",
+  "artifact_id": "RelayOrderBatch20260916V4",
+  "endpoint_path": "/relay/orders/batch20260916",
+  "review_threshold": 1000,
+  "max_orders": 100
+}

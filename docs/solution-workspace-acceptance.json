@@ -1,0 +1,393 @@
+{
+  "at": "2026-09-25T06:08:32.981391+00:00",
+  "package": "RelayTest",
+  "cases": [
+    {
+      "name": "shipment-routing",
+      "plan_id": "b25225a9c52249b2b75b6ddfa6d582f0",
+      "status": "ready",
+      "buildable": true,
+      "questions": [],
+      "blockers": [],
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        1,
+        2,
+        1
+      ],
+      "flow_count": 1,
+      "references": [
+        {
+          "id": "sap-first-iflow",
+          "title": "SAP CodeJam \u2014 Build your first integration flow",
+          "url": "https://github.com/SAP-samples/connecting-systems-services-integration-suite-codejam/blob/main/exercises/03-build-first-integration-flow/README.md",
+          "tags": [
+            "https",
+            "json",
+            "request",
+            "response",
+            "mapping"
+          ],
+          "guidance": "Model the sender, processing steps and response deliberately. External receivers require explicit endpoint and authentication configuration."
+        },
+        {
+          "id": "enterprise-patterns",
+          "title": "SAP Integration Flow Design Guidelines \u2014 Enterprise Integration Patterns",
+          "url": "https://hub.sap.com/package/DesignGuidelinesPatterns/overview",
+          "tags": [
+            "mapping",
+            "transform",
+            "router",
+            "validation",
+            "patterns"
+          ],
+          "guidance": "Use explicit processing steps and inspect reusable SAP integration patterns in Discover. The compiled MVP implements HTTPS JSON validation and transformation only."
+        },
+        {
+          "id": "discover-copy",
+          "title": "SAP \u2014 Copy integration package from Discover to Design",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/6ef7f849fed34f95adfc449f29835255/e0eb202c5ef0464fbcdd33fe987f3545.html",
+          "tags": [
+            "discover",
+            "standard",
+            "package",
+            "s4hana",
+            "sap"
+          ],
+          "guidance": "Inspect standard content and copy the selected package into Design before configuring it. This reference is not an automatic import or a copy of the full Discover catalog."
+        },
+        {
+          "title": "SAP CodeJam HTTP Request Reply example",
+          "url": "https://raw.githubusercontent.com/SAP-samples/connecting-systems-services-integration-suite-codejam/main/exercises/03-build-first-integration-flow/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP AI-enabled integrations CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/ai-enabled-integrations-codejam/main/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP code-based agents CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/codejam-code-based-agents/main/README.md",
+          "status": "retrieved"
+        }
+      ],
+      "artifact_id": "RelayFlow473150a36f16",
+      "run_id": "c6b2cee1-c78f-4de6-9188-b3b059e9193f",
+      "endpoint_path": "/relay/flows/473150a36f16",
+      "fingerprint": "dcc1bc28170dfd3e7eaad4faf7d7e9c7a056bc1b6b925410d2c9c7f2d68e1e86",
+      "deployment_status": "succeeded",
+      "passed": true,
+      "http_status": 200,
+      "input": {
+        "shipments": [
+          {
+            "id": "S1",
+            "weight": 10
+          },
+          {
+            "id": "S2",
+            "weight": 30
+          }
+        ]
+      },
+      "expected": {
+        "count": 2,
+        "shipments": [
+          {
+            "shipmentId": "S1",
+            "billableWeight": 12,
+            "status": "PARCEL"
+          },
+          {
+            "shipmentId": "S2",
+            "billableWeight": 36,
+            "status": "FREIGHT"
+          }
+        ]
+      },
+      "actual": {
+        "shipments": [
+          {
+            "shipmentId": "S1",
+            "billableWeight": 12.0,
+            "status": "PARCEL"
+          },
+          {
+            "shipmentId": "S2",
+            "billableWeight": 36.0,
+            "status": "FREIGHT"
+          }
+        ],
+        "count": 2
+      },
+      "malformed_json_status": 400
+    },
+    {
+      "name": "customer-normalization",
+      "plan_id": "1220e4f801a8408586489c0bc4c9c5f0",
+      "status": "ready",
+      "buildable": true,
+      "questions": [],
+      "blockers": [],
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "key_slots": [
+        2,
+        1,
+        2
+      ],
+      "flow_count": 1,
+      "references": [
+        {
+          "id": "sap-first-iflow",
+          "title": "SAP CodeJam \u2014 Build your first integration flow",
+          "url": "https://github.com/SAP-samples/connecting-systems-services-integration-suite-codejam/blob/main/exercises/03-build-first-integration-flow/README.md",
+          "tags": [
+            "https",
+            "json",
+            "request",
+            "response",
+            "mapping"
+          ],
+          "guidance": "Model the sender, processing steps and response deliberately. External receivers require explicit endpoint and authentication configuration."
+        },
+        {
+          "id": "enterprise-patterns",
+          "title": "SAP Integration Flow Design Guidelines \u2014 Enterprise Integration Patterns",
+          "url": "https://hub.sap.com/package/DesignGuidelinesPatterns/overview",
+          "tags": [
+            "mapping",
+            "transform",
+            "router",
+            "validation",
+            "patterns"
+          ],
+          "guidance": "Use explicit processing steps and inspect reusable SAP integration patterns in Discover. The compiled MVP implements HTTPS JSON validation and transformation only."
+        },
+        {
+          "id": "discover-copy",
+          "title": "SAP \u2014 Copy integration package from Discover to Design",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/6ef7f849fed34f95adfc449f29835255/e0eb202c5ef0464fbcdd33fe987f3545.html",
+          "tags": [
+            "discover",
+            "standard",
+            "package",
+            "s4hana",
+            "sap"
+          ],
+          "guidance": "Inspect standard content and copy the selected package into Design before configuring it. This reference is not an automatic import or a copy of the full Discover catalog."
+        },
+        {
+          "title": "SAP CodeJam HTTP Request Reply example",
+          "url": "https://raw.githubusercontent.com/SAP-samples/connecting-systems-services-integration-suite-codejam/main/exercises/03-build-first-integration-flow/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP AI-enabled integrations CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/ai-enabled-integrations-codejam/main/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP code-based agents CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/codejam-code-based-agents/main/README.md",
+          "status": "retrieved"
+        }
+      ],
+      "artifact_id": "RelayFlow377ca78a05c8",
+      "run_id": "2aed4fb0-cb87-4288-b22a-93e511ed6a11",
+      "endpoint_path": "/relay/flows/377ca78a05c8",
+      "fingerprint": "2c012c5a82f81bf1482fb6a1e1712156d791179ff751fd4e9a9266fbbffe41f0",
+      "deployment_status": "succeeded",
+      "passed": true,
+      "http_status": 200,
+      "input": {
+        "customer": {
+          "id": "C-42",
+          "email": "HELLO@EXAMPLE.COM"
+        }
+      },
+      "expected": {
+        "customerId": "C-42",
+        "email": "hello@example.com"
+      },
+      "actual": {
+        "customerId": "C-42",
+        "email": "hello@example.com"
+      },
+      "malformed_json_status": 400
+    },
+    {
+      "name": "modular-sap-architecture",
+      "plan_id": "4c4d5547afdf47348d9f690c3ed9191b",
+      "status": "not_buildable",
+      "buildable": false,
+      "questions": [
+        "What is the exact business rule or field value used to determine if a cost center is payroll-relevant?",
+        "What are the specific OData entity set and properties used for cost center lookup in S4HANA?",
+        "What is the exact SOAP action or operation name for the ECP IDoc target system?",
+        "What is the exact OData entity set and key structure for upserting employee central costs in SuccessFactors?",
+        "Should the original SOAP IDoc XML be preserved as a property or attached as a payload throughout the flow?"
+      ],
+      "blockers": [
+        "Compiler required: odata_receiver \u2014 Call OData V2 service to look up cost center details using extracted cost center ID.",
+        "Compiler required: process_direct \u2014 Route payroll-relevant cost center records via ProcessDirect to ECP IDoc flow.",
+        "Compiler required: process_direct \u2014 Route non-payroll-relevant cost center records (employee central costs) via ProcessDirect to SuccessFactors OData upsert flow.",
+        "Connected multi-iFlow compilation is not implemented. This is an architecture proposal only.",
+        "ReceiveS4HANAIDoc: the https \u2192 process_direct adapter path needs an additional compiler.",
+        "ReceiveS4HANAIDoc: configuration needed \u2014 OData V2 receiver adapter address for cost center lookup",
+        "ReceiveS4HANAIDoc: configuration needed \u2014 OData V2 receiver adapter authentication method and credentials",
+        "ReceiveS4HANAIDoc: configuration needed \u2014 ProcessDirect target endpoint for ECP IDoc flow",
+        "ReceiveS4HANAIDoc: configuration needed \u2014 ProcessDirect target endpoint for SuccessFactors OData upsert flow",
+        "ECPIDocFlow: the process_direct \u2192 soap adapter path needs an additional compiler.",
+        "ECPIDocFlow: configuration needed \u2014 SOAP receiver adapter address for ECP IDoc target",
+        "ECPIDocFlow: configuration needed \u2014 SOAP receiver adapter authentication method and credentials",
+        "ECPIDocFlow: configuration needed \u2014 SOAP receiver adapter WSDL URL, service name, endpoint, and operation name",
+        "SuccessFactorsUpsertFlow: the process_direct \u2192 odata adapter path needs an additional compiler.",
+        "SuccessFactorsUpsertFlow: configuration needed \u2014 OData V2 receiver adapter address for SuccessFactors upsert",
+        "SuccessFactorsUpsertFlow: configuration needed \u2014 OData V2 receiver adapter authentication method and credentials",
+        "SuccessFactorsUpsertFlow: configuration needed \u2014 OData V2 receiver adapter entity set and operation details (e.g., POST for upsert)"
+      ],
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        2
+      ],
+      "flow_count": 3,
+      "references": [
+        {
+          "id": "enterprise-patterns",
+          "title": "SAP Integration Flow Design Guidelines \u2014 Enterprise Integration Patterns",
+          "url": "https://hub.sap.com/package/DesignGuidelinesPatterns/overview",
+          "tags": [
+            "mapping",
+            "transform",
+            "router",
+            "validation",
+            "patterns"
+          ],
+          "guidance": "Use explicit processing steps and inspect reusable SAP integration patterns in Discover. The compiled MVP implements HTTPS JSON validation and transformation only."
+        },
+        {
+          "id": "sap-first-iflow",
+          "title": "SAP CodeJam \u2014 Build your first integration flow",
+          "url": "https://github.com/SAP-samples/connecting-systems-services-integration-suite-codejam/blob/main/exercises/03-build-first-integration-flow/README.md",
+          "tags": [
+            "https",
+            "json",
+            "request",
+            "response",
+            "mapping"
+          ],
+          "guidance": "Model the sender, processing steps and response deliberately. External receivers require explicit endpoint and authentication configuration."
+        },
+        {
+          "id": "discover-copy",
+          "title": "SAP \u2014 Copy integration package from Discover to Design",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/6ef7f849fed34f95adfc449f29835255/e0eb202c5ef0464fbcdd33fe987f3545.html",
+          "tags": [
+            "discover",
+            "standard",
+            "package",
+            "s4hana",
+            "sap"
+          ],
+          "guidance": "Inspect standard content and copy the selected package into Design before configuring it. This reference is not an automatic import or a copy of the full Discover catalog."
+        },
+        {
+          "title": "SAP OData V2 receiver configuration",
+          "url": "https://raw.githubusercontent.com/SAP-docs/btp-integration-suite/main/docs/ISuite_Integrations_APIs/configure-the-odata-v2-receiver-adapter-c5c2e38.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP SOAP receiver configuration",
+          "url": "https://raw.githubusercontent.com/SAP-docs/btp-integration-suite/main/docs/ISuite_Integrations_APIs/configure-the-soap-soap-1-x-receiver-adapter-57f7b34.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP AI-enabled integrations CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/ai-enabled-integrations-codejam/main/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP code-based agents CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/codejam-code-based-agents/main/README.md",
+          "status": "retrieved"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "missing-business-rule",
+      "plan_id": "8fa60f0d54f1479ea319a7d541710917",
+      "status": "not_buildable",
+      "buildable": false,
+      "questions": [
+        "What numeric threshold value should be used to classify an order as high-value (routing to REVIEW) versus low-value (routing to APPROVED)?"
+      ],
+      "blockers": [
+        "RelayFlowe90a535b693e: configuration needed \u2014 Threshold value for high-value order classification (user must specify)"
+      ],
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        1
+      ],
+      "flow_count": 1,
+      "references": [
+        {
+          "id": "sap-first-iflow",
+          "title": "SAP CodeJam \u2014 Build your first integration flow",
+          "url": "https://github.com/SAP-samples/connecting-systems-services-integration-suite-codejam/blob/main/exercises/03-build-first-integration-flow/README.md",
+          "tags": [
+            "https",
+            "json",
+            "request",
+            "response",
+            "mapping"
+          ],
+          "guidance": "Model the sender, processing steps and response deliberately. External receivers require explicit endpoint and authentication configuration."
+        },
+        {
+          "id": "enterprise-patterns",
+          "title": "SAP Integration Flow Design Guidelines \u2014 Enterprise Integration Patterns",
+          "url": "https://hub.sap.com/package/DesignGuidelinesPatterns/overview",
+          "tags": [
+            "mapping",
+            "transform",
+            "router",
+            "validation",
+            "patterns"
+          ],
+          "guidance": "Use explicit processing steps and inspect reusable SAP integration patterns in Discover. The compiled MVP implements HTTPS JSON validation and transformation only."
+        },
+        {
+          "id": "discover-copy",
+          "title": "SAP \u2014 Copy integration package from Discover to Design",
+          "url": "https://help.sap.com/docs/SAP_S4HANA_CLOUD/6ef7f849fed34f95adfc449f29835255/e0eb202c5ef0464fbcdd33fe987f3545.html",
+          "tags": [
+            "discover",
+            "standard",
+            "package",
+            "s4hana",
+            "sap"
+          ],
+          "guidance": "Inspect standard content and copy the selected package into Design before configuring it. This reference is not an automatic import or a copy of the full Discover catalog."
+        },
+        {
+          "title": "SAP CodeJam HTTP Request Reply example",
+          "url": "https://raw.githubusercontent.com/SAP-samples/connecting-systems-services-integration-suite-codejam/main/exercises/03-build-first-integration-flow/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP AI-enabled integrations CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/ai-enabled-integrations-codejam/main/README.md",
+          "status": "retrieved"
+        },
+        {
+          "title": "SAP code-based agents CodeJam",
+          "url": "https://raw.githubusercontent.com/SAP-samples/codejam-code-based-agents/main/README.md",
+          "status": "retrieved"
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

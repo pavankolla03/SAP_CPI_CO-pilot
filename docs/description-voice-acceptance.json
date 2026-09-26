@@ -1,0 +1,43 @@
+{
+  "voice": {
+    "text": "Receive multiple orders over HTTPS, split each order by ID, calculate the total, root high value orders for review, and handle exceptions.",
+    "language": "en",
+    "seconds": 9.52,
+    "review_required": true,
+    "provider": "local-faster-whisper"
+  },
+  "design": {
+    "pattern": "batch_orders",
+    "title": "Process orders by ID",
+    "package_id": "RelayAcceptance20260915",
+    "artifact_id": "RelayOrderseed377c3599b",
+    "endpoint_path": "/relay/orders/eed377c3599b",
+    "review_threshold": 1000,
+    "max_orders": 100
+  },
+  "run_id": "82286c14-d3e7-4e37-816d-4991d6c4ac0a",
+  "job_id": "d4b0d618-eb98-4510-8e73-427ceeb46bfc",
+  "deployment": "succeeded",
+  "business_status": 200,
+  "business_result": {
+    "orders": [
+      {
+        "id": "VOICE-1",
+        "status": "ACCEPTED",
+        "total": 50
+      },
+      {
+        "id": "VOICE-2",
+        "status": "REVIEW",
+        "total": 1500
+      },
+      {
+        "id": "VOICE-3",
+        "status": "REJECTED",
+        "total": 0
+      }
+    ],
+    "count": 3
+  },
+  "model": "nex-agi/nex-n2.5-pro:free"
+}

@@ -1,0 +1,269 @@
+{
+  "package_id": "RelayTest",
+  "compiler": "general-json-pipeline",
+  "scenarios": [
+    {
+      "name": "invoice-processing",
+      "artifact_id": "RelayFlow61f6e1c9b11d",
+      "endpoint_path": "/relay/flows/61f6e1c9b11d",
+      "design": {
+        "title": "Invoice HTTPS JSON Relay",
+        "package_id": "RelayTest",
+        "artifact_id": "RelayFlow61f6e1c9b11d",
+        "endpoint_path": "/relay/flows/61f6e1c9b11d",
+        "collection_path": "invoices",
+        "required_fields": [
+          "id",
+          "quantity",
+          "unitPrice"
+        ],
+        "mappings": [
+          {
+            "source": "id",
+            "target": "invoiceId",
+            "transform": "copy"
+          },
+          {
+            "source": "quantity",
+            "target": "quantity",
+            "transform": "copy"
+          },
+          {
+            "source": "unitPrice",
+            "target": "unitPrice",
+            "transform": "copy"
+          }
+        ],
+        "calculations": [
+          {
+            "target": "total",
+            "left": "quantity",
+            "operator": "multiply",
+            "right_field": "unitPrice",
+            "right_value": null
+          }
+        ],
+        "filters": [],
+        "routes": [
+          {
+            "condition": {
+              "source": "total",
+              "operator": "gt",
+              "value": 5000
+            },
+            "label": "MANUAL_REVIEW"
+          },
+          {
+            "condition": {
+              "source": "total",
+              "operator": "le",
+              "value": 5000
+            },
+            "label": "APPROVED"
+          }
+        ],
+        "default_route": "APPROVED",
+        "status_field": "status",
+        "deduplicate_by": "id",
+        "sort_by": null,
+        "sort_descending": false,
+        "output_collection": "invoices",
+        "max_records": 1000
+      },
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "key_slots": [
+        1
+      ],
+      "http_status": 200,
+      "input": {
+        "invoices": [
+          {
+            "id": "INV-1",
+            "quantity": 2,
+            "unitPrice": 100
+          },
+          {
+            "id": "INV-2",
+            "quantity": 10,
+            "unitPrice": 600
+          },
+          {
+            "id": "INV-1",
+            "quantity": 8,
+            "unitPrice": 900
+          }
+        ]
+      },
+      "output": {
+        "invoices": [
+          {
+            "invoiceId": "INV-1",
+            "quantity": 2,
+            "unitPrice": 100,
+            "total": 200,
+            "status": "APPROVED"
+          },
+          {
+            "invoiceId": "INV-2",
+            "quantity": 10,
+            "unitPrice": 600,
+            "total": 6000,
+            "status": "MANUAL_REVIEW"
+          }
+        ],
+        "count": 2
+      }
+    },
+    {
+      "name": "inventory-alerts",
+      "artifact_id": "RelayFlowa9beadc8d5c4",
+      "endpoint_path": "/relay/flows/a9beadc8d5c4",
+      "design": {
+        "title": "Process Inventory Alerts",
+        "package_id": "RelayTest",
+        "artifact_id": "RelayFlowa9beadc8d5c4",
+        "endpoint_path": "/relay/flows/a9beadc8d5c4",
+        "collection_path": "items",
+        "required_fields": [
+          "sku",
+          "available",
+          "reorderLevel"
+        ],
+        "mappings": [
+          {
+            "source": "sku",
+            "target": "productCode",
+            "transform": "uppercase"
+          }
+        ],
+        "calculations": [
+          {
+            "target": "shortage",
+            "left": "reorderLevel",
+            "operator": "subtract",
+            "right_field": "available",
+            "right_value": null
+          }
+        ],
+        "filters": [
+          {
+            "source": "shortage",
+            "operator": "gt",
+            "value": 0
+          }
+        ],
+        "routes": [],
+        "default_route": null,
+        "status_field": "status",
+        "deduplicate_by": null,
+        "sort_by": "shortage",
+        "sort_descending": true,
+        "output_collection": "alerts",
+        "max_records": 100
+      },
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        2
+      ],
+      "http_status": 200,
+      "input": {
+        "items": [
+          {
+            "sku": "a-1",
+            "available": 8,
+            "reorderLevel": 10
+          },
+          {
+            "sku": "b-2",
+            "available": 3,
+            "reorderLevel": 10
+          },
+          {
+            "sku": "c-3",
+            "available": 20,
+            "reorderLevel": 10
+          }
+        ]
+      },
+      "output": {
+        "alerts": [
+          {
+            "productCode": "B-2",
+            "shortage": 7
+          },
+          {
+            "productCode": "A-1",
+            "shortage": 2
+          }
+        ],
+        "count": 2
+      }
+    },
+    {
+      "name": "employee-normalization",
+      "artifact_id": "RelayFlowff8375a4d39a",
+      "endpoint_path": "/relay/flows/ff8375a4d39a",
+      "design": {
+        "title": "Normalize Employee Object",
+        "package_id": "RelayTest",
+        "artifact_id": "RelayFlowff8375a4d39a",
+        "endpoint_path": "/relay/flows/ff8375a4d39a",
+        "collection_path": null,
+        "required_fields": [
+          "employee.id",
+          "employee.name",
+          "employee.email"
+        ],
+        "mappings": [
+          {
+            "source": "employee.id",
+            "target": "employeeId",
+            "transform": "copy"
+          },
+          {
+            "source": "employee.name",
+            "target": "displayName",
+            "transform": "uppercase"
+          },
+          {
+            "source": "employee.email",
+            "target": "email",
+            "transform": "lowercase"
+          }
+        ],
+        "calculations": [],
+        "filters": [],
+        "routes": [],
+        "default_route": null,
+        "status_field": "status",
+        "deduplicate_by": null,
+        "sort_by": null,
+        "sort_descending": false,
+        "output_collection": "items",
+        "max_records": 100
+      },
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        1
+      ],
+      "http_status": 200,
+      "input": {
+        "employee": {
+          "id": "E-7",
+          "name": "Ada Lovelace",
+          "email": "ADA@EXAMPLE.COM"
+        }
+      },
+      "output": {
+        "employeeId": "E-7",
+        "displayName": "ADA LOVELACE",
+        "email": "ada@example.com"
+      }
+    }
+  ],
+  "external_adapter_guard": {
+    "supported": false,
+    "explanation": "This scenario requires SFTP polling, PGP decryption, and an S/4HANA OData write. The HTTPS JSON pipeline cannot perform those operations or confirm external sales-order creation. Provide the adapter/configuration details needed by future SFTP, PGP, and S/4HANA OData modules.",
+    "questions": []
+  }
+}

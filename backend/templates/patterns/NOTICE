@@ -1,0 +1,11 @@
+Copyright (c) 2018 SAP SE or an SAP affiliate company. All rights reserved.
+
+Relay modifications: isolated native element templates, changed IDs, XPath, splitter options and diagram layout.
+Original SAP recipe sources (Apache-2.0):
+https://github.com/SAP/apibusinesshub-integration-recipes/tree/7005c8cc819c0846c0261cf8246bcacc298da6ee/Recipes/for/How%20to%20determine%20when%20all%20split%20messages%20are%20processed
+https://github.com/SAP/apibusinesshub-integration-recipes/tree/7005c8cc819c0846c0261cf8246bcacc298da6ee/Recipes/for/ExactlyOnce%20handling%20in%20Cloud%20Platform%20Integration
+
+AMQP sender and receiver metadata derived from SAP recipes at the same revision:
+Recipes/for/EIP-MessageConstruction-CorrelationIdentifier/Correlation Identifier - Processing Response.zip
+Recipes/for/EIP-MessageConstruction-CorrelationIdentifier/Correlation Identifier - Processing Customer.zip
+Relay changes: replace all original destinations and credential aliases with explicit externalized Solace configuration; persistent topic delivery and TLS retained.

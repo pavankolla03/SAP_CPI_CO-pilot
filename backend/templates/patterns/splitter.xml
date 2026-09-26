@@ -1,0 +1,47 @@
+<ns0:callActivity xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http:///com.sap.ifl.model/Ifl.xsd" id="CallActivity_2" name="General Splitter">
+            <ns0:extensionElements>
+                <ns1:property>
+                    <key>activityType</key>
+                    <value>Splitter</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>splitType</key>
+                    <value>GeneralSplitter</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>componentVersion</key>
+                    <value>1.1</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>Streaming</key>
+                    <value>true</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>ParallelProcessing</key>
+                    <value>false</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>StopOnExecution</key>
+                    <value>true</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>splitExprValue</key>
+                    <value>//Student</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>grouping</key>
+                    <value />
+        </ns1:property>
+                <ns1:property>
+                    <key>timeOut</key>
+                    <value />
+        </ns1:property>
+                <ns1:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::GeneralSplitter/version::1.1.2</value>
+                </ns1:property>
+            </ns0:extensionElements>
+            <ns0:incoming>SequenceFlow_3</ns0:incoming>
+            <ns0:outgoing>SequenceFlow_4</ns0:outgoing>
+        </ns0:callActivity>
+        

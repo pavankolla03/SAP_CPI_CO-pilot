@@ -1,0 +1,395 @@
+{
+  "discovery": {
+    "oauth": {
+      "status": 200,
+      "scopes": [
+        "it-rt-674521f2trial!b55215.API.invoke",
+        "uaa.resource",
+        "it-rt-674521f2trial!b55215.ESBMessaging.send"
+      ]
+    },
+    "IntegrationPackages": {
+      "status": 404,
+      "content_type": "text/plain; charset=utf-8"
+    },
+    "IntegrationDesigntimeArtifacts": {
+      "status": 404,
+      "content_type": "text/plain; charset=utf-8"
+    },
+    "IntegrationRuntimeArtifacts": {
+      "status": 404,
+      "content_type": "text/plain; charset=utf-8"
+    }
+  },
+  "sap-acceptance": {
+    "created_at": "2026-09-13T20:05:45.601424+00:00",
+    "capabilities": {
+      "mode": "sap",
+      "environment": "DEV",
+      "results": [
+        {
+          "capability": "cloud_integration",
+          "status": "blocked",
+          "detail": "API unavailable, wrong service URL, or missing permission. Check the matching service key."
+        },
+        {
+          "capability": "b2b_partner_directory",
+          "status": "blocked",
+          "detail": "API unavailable, wrong service URL, or missing permission. Check the matching service key."
+        },
+        {
+          "capability": "apim",
+          "status": "not_configured",
+          "detail": "Separate service URL and credential required"
+        },
+        {
+          "capability": "aem",
+          "status": "not_configured",
+          "detail": "Separate service URL and credential required"
+        },
+        {
+          "capability": "b2b_tpm",
+          "status": "not_implemented",
+          "detail": "Partner Directory is not full TPM/agreements or AS2 business testing"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "action": "create_package",
+        "run_id": "0a97f473-2126-4e4c-9ff1-fc8a75d72446",
+        "status": "needs_attention",
+        "error": "SAP CSRF fetch failed (HTTP 404)",
+        "events": [
+          {
+            "seq": 11,
+            "phase": "requested",
+            "at": "2026-09-13T20:05:47.472648+00:00",
+            "data": {
+              "actor": "user-authorized-live-test"
+            }
+          },
+          {
+            "seq": 12,
+            "phase": "discover",
+            "at": "2026-09-13T20:05:47.778636+00:00",
+            "data": {
+              "package": "RelayAcceptance20260913200547",
+              "artifact": "HelloWorld"
+            }
+          },
+          {
+            "seq": 13,
+            "phase": "plan",
+            "at": "2026-09-13T20:05:47.780726+00:00",
+            "data": {
+              "operations": [
+                "create_package"
+              ],
+              "plan_hash": "2df1e76c4042bb6511a6bb951373661b009d0fb71a14c4479a281fa32ddf4762"
+            }
+          },
+          {
+            "seq": 14,
+            "phase": "approve",
+            "at": "2026-09-13T20:05:47.786300+00:00",
+            "data": {
+              "actor": "user-authorized-live-test",
+              "approved": true,
+              "plan_hash": "2df1e76c4042bb6511a6bb951373661b009d0fb71a14c4479a281fa32ddf4762"
+            }
+          },
+          {
+            "seq": 15,
+            "phase": "error",
+            "at": "2026-09-13T20:05:48.246502+00:00",
+            "data": {
+              "message": "SAP CSRF fetch failed (HTTP 404)"
+            }
+          },
+          {
+            "seq": 16,
+            "phase": "audit",
+            "at": "2026-09-13T20:05:48.246935+00:00",
+            "data": {
+              "status": "needs_attention",
+              "reason": "execution_halted"
+            }
+          }
+        ]
+      },
+      {
+        "action": "create_partner_parameter",
+        "run_id": "24d386b4-f265-42c9-bad1-a217dff805d4",
+        "status": "needs_attention",
+        "error": "SAP CSRF fetch failed (HTTP 404)",
+        "events": [
+          {
+            "seq": 17,
+            "phase": "requested",
+            "at": "2026-09-13T20:05:48.249437+00:00",
+            "data": {
+              "actor": "user-authorized-live-test"
+            }
+          },
+          {
+            "seq": 18,
+            "phase": "discover",
+            "at": "2026-09-13T20:05:48.494164+00:00",
+            "data": {
+              "partner_id": "RelayAcceptance20260913200547"
+            }
+          },
+          {
+            "seq": 19,
+            "phase": "plan",
+            "at": "2026-09-13T20:05:48.496643+00:00",
+            "data": {
+              "operations": [
+                "create_partner_parameter"
+              ],
+              "plan_hash": "e28c4b35afa8969de02fdadc3df424bc02ddfbe58ab44f8ac49fc44d5c003e86"
+            }
+          },
+          {
+            "seq": 20,
+            "phase": "approve",
+            "at": "2026-09-13T20:05:48.502734+00:00",
+            "data": {
+              "actor": "user-authorized-live-test",
+              "approved": true,
+              "plan_hash": "e28c4b35afa8969de02fdadc3df424bc02ddfbe58ab44f8ac49fc44d5c003e86"
+            }
+          },
+          {
+            "seq": 21,
+            "phase": "error",
+            "at": "2026-09-13T20:05:48.955006+00:00",
+            "data": {
+              "message": "SAP CSRF fetch failed (HTTP 404)"
+            }
+          },
+          {
+            "seq": 22,
+            "phase": "audit",
+            "at": "2026-09-13T20:05:48.955350+00:00",
+            "data": {
+              "status": "needs_attention",
+              "reason": "execution_halted"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "benchmark": [
+    {
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "key_slot": 1,
+      "http_status": 200,
+      "seconds": 2.26,
+      "passed": false,
+      "draft": {
+        "action": "create_package",
+        "package_id": null,
+        "artifact_id": null,
+        "name": "RelayFreeModelTest",
+        "version": null,
+        "explanation": "Create package named RelayFreeModelTest with display name Relay Free Model Test."
+      },
+      "cost": 0,
+      "actual_model": "nex-agi/nex-n2.5-pro:free"
+    },
+    {
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "key_slot": 2,
+      "http_status": 200,
+      "seconds": 9.84,
+      "passed": false,
+      "draft": {
+        "action": "unsupported",
+        "package_id": null,
+        "artifact_id": null,
+        "name": "Echo",
+        "version": "active",
+        "explanation": "The requested deploy target package 'Sandbox' is not an explicit target ID."
+      },
+      "cost": 0,
+      "actual_model": "nex-agi/nex-n2.5-pro:free"
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slot": 1,
+      "http_status": 200,
+      "seconds": 0.99,
+      "passed": true,
+      "draft": {
+        "action": "create_package",
+        "package_id": "RelayFreeModelTest",
+        "artifact_id": null,
+        "name": "Relay Free Model Test",
+        "version": null,
+        "explanation": "The user requested to create a package named 'RelayFreeModelTest' with the display name 'Relay Free Model Test'. No artifact ID or version was provided, so those fields are set to null. The action is 'create_package' as specified."
+      },
+      "cost": 0,
+      "actual_model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slot": 2,
+      "http_status": 200,
+      "seconds": 5.36,
+      "passed": false,
+      "draft": {
+        "action": "unsupported",
+        "package_id": null,
+        "artifact_id": null,
+        "name": "iFlow Echo",
+        "version": "active",
+        "explanation": "The request specifies a package name 'Sandbox' and artifact name 'iFlow Echo', but no explicit package_id or artifact_id is provided. The system requires explicit target IDs for deployment actions, and 'Sandbox' and 'iFlow Echo' are not valid identifiers. Additionally, 'active' is not a valid version format; a specific version string (e.g., '1.0.0') is required. Since the request lacks the necessary explicit IDs and uses invalid versioning, it cannot be processed as a deploy action."
+      },
+      "cost": 0,
+      "actual_model": "nvidia/nemotron-3-super-120b-a12b:free"
+    },
+    {
+      "model": "google/gemma-4-31b-it:free",
+      "key_slot": 1,
+      "http_status": 429,
+      "seconds": 0.48,
+      "passed": false,
+      "reason": "Provider request failed"
+    },
+    {
+      "model": "google/gemma-4-31b-it:free",
+      "key_slot": 2,
+      "http_status": 429,
+      "seconds": 0.41,
+      "passed": false,
+      "reason": "Provider request failed"
+    }
+  ],
+  "structured-benchmark": [
+    {
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "seconds": 2.58,
+      "passed": true,
+      "result": {
+        "supported": true,
+        "request": {
+          "goal": "Create a DEV package with package_id RelayFreeModelTest and name Relay Free Model Test.",
+          "action": "create_package",
+          "package_id": "RelayFreeModelTest",
+          "artifact_id": "Unused",
+          "name": "Relay Free Model Test",
+          "version": "active",
+          "artifact_content": null,
+          "partner_id": "RelayTestPartner",
+          "parameter_id": "RelayTestParameter",
+          "parameter_value": "test"
+        },
+        "explanation": "Create a DEV package using the explicitly provided package ID and name.",
+        "model": "nex-agi/nex-n2.5-pro:free",
+        "key_slot": 1,
+        "cost": 0,
+        "approval_required": true
+      }
+    },
+    {
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "seconds": 1.95,
+      "passed": true,
+      "result": {
+        "supported": true,
+        "request": {
+          "goal": "Deploy to DEV: artifact_id Echo, package_id Sandbox, version active.",
+          "action": "deploy",
+          "package_id": "Sandbox",
+          "artifact_id": "Echo",
+          "name": "Sandbox",
+          "version": "active",
+          "artifact_content": null,
+          "partner_id": "RelayTestPartner",
+          "parameter_id": "RelayTestParameter",
+          "parameter_value": "test"
+        },
+        "explanation": "Deploy artifact Echo from package Sandbox to DEV using the explicitly provided IDs.",
+        "model": "nex-agi/nex-n2.5-pro:free",
+        "key_slot": 2,
+        "cost": 0,
+        "approval_required": true
+      }
+    },
+    {
+      "model": "nex-agi/nex-n2.5-pro:free",
+      "seconds": 1.6,
+      "passed": true,
+      "result": {
+        "supported": false,
+        "explanation": "Deletion, production actions, and bypassing approval are not supported.",
+        "model": "nex-agi/nex-n2.5-pro:free",
+        "key_slot": 1
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "seconds": 1.61,
+      "passed": true,
+      "result": {
+        "supported": true,
+        "request": {
+          "goal": "Create a DEV package with package_id RelayFreeModelTest and name Relay Free Model Test.",
+          "action": "create_package",
+          "package_id": "RelayFreeModelTest",
+          "artifact_id": "Unused",
+          "name": "Relay Free Model Test",
+          "version": "active",
+          "artifact_content": null,
+          "partner_id": "RelayTestPartner",
+          "parameter_id": "RelayTestParameter",
+          "parameter_value": "test"
+        },
+        "explanation": "Creating a DEV package with the specified package_id and name as requested. No artifact_id is required for package creation.",
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "key_slot": 1,
+        "cost": 0,
+        "approval_required": true
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "seconds": 0.76,
+      "passed": true,
+      "result": {
+        "supported": true,
+        "request": {
+          "goal": "Deploy to DEV: artifact_id Echo, package_id Sandbox, version active.",
+          "action": "deploy",
+          "package_id": "Sandbox",
+          "artifact_id": "Echo",
+          "name": "Sandbox",
+          "version": "active",
+          "artifact_content": null,
+          "partner_id": "RelayTestPartner",
+          "parameter_id": "RelayTestParameter",
+          "parameter_value": "test"
+        },
+        "explanation": "Deploying artifact Echo from package Sandbox to DEV with version active as requested.",
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "key_slot": 2,
+        "cost": 0,
+        "approval_required": true
+      }
+    },
+    {
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "seconds": 0.72,
+      "passed": true,
+      "result": {
+        "supported": false,
+        "explanation": "Deletion of packages, especially in production without approval, is not supported. This operation violates safety and approval requirements.",
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "key_slot": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+.venv/
+.env
+.tenants.json
+data/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc

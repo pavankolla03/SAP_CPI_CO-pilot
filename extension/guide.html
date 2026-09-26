@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Get started · Relay</title>
+  <link rel="stylesheet" href="guide.css">
+</head>
+<body>
+<main>
+  <div class="wordmark">relay <span>CHROME EXTENSION</span></div>
+  <div class="eyebrow">A CAPABLE PARTNER, RIGHT BESIDE YOUR WORK.</div>
+  <h1>A little setup.<br><em>A better workflow.</em></h1>
+  <p>Relay stays beside SAP in Chrome and turns reviewed descriptions into approval-gated DEV changes.</p>
+  <section><span class="step">01</span><div>
+    <h2>Add Relay to Chrome</h2>
+    <p>Extract the extension ZIP. Open <code>chrome://extensions</code>, enable Developer mode, choose <strong>Load unpacked</strong>, and select the folder containing <code>manifest.json</code>.</p>
+    <p>Pin Relay and click its icon. You can also use <strong>⌘ ⇧ Y</strong> on Mac or <strong>Ctrl Shift Y</strong> on Windows and Linux.</p>
+  </div></section>
+  <section><span class="step">02</span><div>
+    <h2>Connect your workspace</h2>
+    <p>Start the backend, open Connection settings, enter <code>http://127.0.0.1:8000</code>, and use the Relay access token from the private backend configuration.</p>
+    <p>SAP service keys and AI provider keys stay in the backend. Never paste them into the side panel.</p>
+  </div></section>
+  <section><span class="step">03</span><div>
+    <h2>Describe. Review. Approve.</h2>
+    <p>Choose a package and describe the input, rules and expected output. Relay derives a typed pipeline for validation, mapping, calculations, filtering, deduplication, sorting, routing and response shaping.</p>
+    <p>Inspect what Relay understood and the before/after plan. The iFlow is uploaded only after an approver selects <strong>Create iFlow &amp; deploy</strong>.</p>
+  </div></section>
+  <section><span class="step">04</span><div>
+    <h2>Configure real connections</h2>
+    <p>Scenarios requiring SFTP, SOAP, OData, AS2, mail, JMS, AMQP, databases or ERP writes need an adapter module and connection details. Relay asks for these instead of pretending that a local response performed the external operation.</p>
+  </div></section>
+  <details><summary>Permissions &amp; distribution</summary>
+    <p>This developer build requests side-panel access, session storage and the two localhost backend origins. It does not read SAP browser sessions or inject page scripts.</p>
+    <p>Public distribution needs a hosted authenticated backend, privacy disclosures, store assets and Chrome Web Store review.</p>
+  </details>
+  <footer>RELAY / 0.5 — THOUGHTFULLY HANDLED.</footer>
+</main>
+</body>
+</html>

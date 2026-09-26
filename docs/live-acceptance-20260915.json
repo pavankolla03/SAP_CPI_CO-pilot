@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-15",
+  "package_id": "RelayAcceptance20260915",
+  "package_run": "82933263-1777-416e-8a15-3cddd9006c92",
+  "artifact_id": "RelaySmoke20260915V2",
+  "deployment_run": "d9e36975-993f-4b76-9140-1263b4a8f862",
+  "deployment_status": "succeeded",
+  "runtime_status": "STARTED",
+  "http": {
+    "runtime_oauth_status": 200,
+    "http_status": 200,
+    "body": {
+      "status": "ok",
+      "artifact": "RelaySmoke20260915"
+    },
+    "message_id": "AGqpTDRGt-WnaYKOjyn9vN9Ct1Fj"
+  },
+  "message_logs": [
+    {
+      "MessageGuid": "AGqpTDRGt-WnaYKOjyn9vN9Ct1Fj",
+      "Status": "COMPLETED"
+    }
+  ],
+  "original_artifact_unchanged": "Shopify_to_S4HANA_Order_Pipeline",
+  "failed_test_artifact_retained": "RelaySmoke20260915",
+  "automated_tests": 54
+}

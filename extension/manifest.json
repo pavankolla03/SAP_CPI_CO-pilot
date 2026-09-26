@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Relay \u00b7 SAP Integration Agent",
+  "description": "Plan, approve and verify SAP Integration Suite DEV changes.",
+  "version": "0.6.1",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "sidePanel",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_title": "Open Relay",
+    "default_icon": {
+      "16": "icons/relay-16.png",
+      "32": "icons/relay-32.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'"
+  },
+  "icons": {
+    "16": "icons/relay-16.png",
+    "32": "icons/relay-32.png",
+    "48": "icons/relay-48.png",
+    "128": "icons/relay-128.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Open Relay side panel"
+    }
+  },
+  "options_ui": {
+    "page": "guide.html",
+    "open_in_tab": true
+  }
+}

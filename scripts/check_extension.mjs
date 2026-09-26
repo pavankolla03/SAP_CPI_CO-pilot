@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+const root=new URL('../extension/', import.meta.url).pathname;
+const manifest=JSON.parse(fs.readFileSync(root+'manifest.json','utf8'));
+assert.equal(manifest.manifest_version,3);
+assert.deepEqual(manifest.permissions,['sidePanel','storage']);
+assert.equal(manifest.commands._execute_action.suggested_key.mac,'Command+Shift+Y');
+for(const path of [manifest.side_panel.default_path,manifest.background.service_worker,manifest.options_ui.page,...Object.values(manifest.icons)]) assert(fs.existsSync(root+path),path);
+const html=fs.readFileSync(root+'index.html','utf8');
+const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(x=>x[1]);
+assert.equal(new Set(ids).size,ids.length,'Duplicate HTML IDs');
+const js=['panel.js','studio.js'].map(file=>fs.readFileSync(root+file,'utf8')).join('\n');
+for(const match of js.matchAll(/\$\('([^']+)'\)/g)) assert(ids.includes(match[1]),'Missing element '+match[1]);
+let behavior;
+vm.runInNewContext(fs.readFileSync(root+manifest.background.service_worker,'utf8'),{chrome:{sidePanel:{setPanelBehavior(value){behavior=value;return Promise.resolve();}}},console});
+assert.equal(behavior.openPanelOnActionClick,true);
+console.log('MV3 files, permissions, shortcut, UI bindings, and toolbar side-panel behavior verified.');

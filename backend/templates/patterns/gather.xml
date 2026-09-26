@@ -1,0 +1,23 @@
+<ns0:callActivity xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http:///com.sap.ifl.model/Ifl.xsd" id="CallActivity_3" name="Gather">
+            <ns0:extensionElements>
+                <ns1:property>
+                    <key>activityType</key>
+                    <value>Gather</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>messageType</key>
+                    <value>SameXMLFormat</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>aggregationAlgorithm</key>
+                    <value>sap-identical-multi-mapping</value>
+        </ns1:property>
+                <ns1:property>
+                    <key>cmdVariantUri</key>
+                    <value>ctype::FlowstepVariant/cname::Gather</value>
+                </ns1:property>
+            </ns0:extensionElements>
+            <ns0:incoming>SequenceFlow_9</ns0:incoming>
+            <ns0:outgoing>SequenceFlow_10</ns0:outgoing>
+        </ns0:callActivity>
+        

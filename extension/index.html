@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Relay · Integration Agent</title><link rel="stylesheet" href="panel.css"><link rel="stylesheet" href="workspace.css"><link rel="stylesheet" href="studio.css"></head>
+<body>
+<main class="app-shell">
+  <header class="app-header"><a class="brand" href="index.html" aria-label="Relay home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span><span>relay<span class="subtitle">YOUR SAP COPILOT</span></span></a><div class="header-actions"><span class="extension-label">SIDE PANEL</span><button id="new-task" class="icon" aria-label="New task" title="New task">＋</button><button id="settings-toggle" class="icon" aria-label="Connection settings" title="Connection settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="currentColor"/><circle cx="15" cy="17" r="2.5" fill="currentColor"/></svg></button></div></header>
+  <section class="workspace-bar"><span class="dot" id="connection-dot"></span><span id="workspace-name">Connect a workspace</span><span class="pill" id="mode">OFFLINE</span></section>
+  <div class="workspace-layout">
+  <nav class="tabs" aria-label="Workspace views" role="tablist" aria-orientation="vertical"><span class="nav-label">BUILD</span><button data-tab="package-create" role="tab" aria-selected="false">＋ Create package</button><button class="selected" data-tab="agent" role="tab" aria-selected="true">⌁ Create iFlow</button><span class="nav-label">WORKSPACE</span><button data-tab="inventory" role="tab" aria-selected="false">Packages & iFlows</button><button data-tab="history" role="tab" aria-selected="false">Activity</button><button data-tab="advanced" role="tab" aria-selected="false">Advanced tools</button><button data-tab="capabilities" role="tab" aria-selected="false">Connections</button></nav>
+  <div class="scroll-area">
+  <section id="settings" class="card">
+    <div class="eyebrow">01 / GET CONNECTED</div><h2>Make yourself at home.</h2><p>Use your backend access token. SAP credentials stay on the server.</p>
+    <label for="backend">Backend URL</label><input id="backend" value="http://127.0.0.1:8000" spellcheck="false">
+    <label for="token">Access token</label><input id="token" type="password" placeholder="Paste your local access token" autocomplete="off">
+    <div class="button-row"><button id="connect" class="primary">Connect workspace <span>→</span></button><button id="disconnect" class="quiet">Disconnect</button></div>
+    <small>Token is kept for this browser session only.</small>
+  </section>
+  <div id="notice" role="status" aria-live="polite" hidden></div>
+  <section id="tab-package-create" hidden role="tabpanel" aria-label="Create package">
+    <div class="page-heading"><div class="eyebrow">ORGANIZE YOUR INTEGRATIONS</div><h1>Create package</h1><p>Create a container for your iFlows, then select it on the Create iFlow screen.</p></div>
+    <form id="package-create-form" class="card"><label for="new-package-name">Package name</label><input id="new-package-name" required maxlength="160" placeholder="Order integrations"><label for="new-package-id">Package ID</label><input id="new-package-id" required pattern="[A-Za-z0-9_.-]{1,160}" maxlength="160" placeholder="OrderIntegrations"><p>Review the package, then confirm creation below.</p><button id="package-create-button" class="primary full" type="submit">Review package →</button></form>
+  </section>
+  <section id="tab-agent" role="tabpanel" aria-label="Create iFlow">
+    <div class="studio-heading"><div><div class="eyebrow">YOUR INTEGRATION WORKSPACE</div><h1>What would you like to integrate?</h1><p>Describe it. Shape the plan. Build with confidence.</p></div><span class="studio-badge">SAP DEV · Approval protected</span></div>
+    <nav class="studio-switcher" aria-label="Design workspace"><button type="button" data-pane="describe" aria-pressed="true"><span>1</span>Describe</button><button type="button" data-pane="plan" aria-pressed="false"><span>2</span>Plan</button><button type="button" data-pane="diagram" aria-pressed="false"><span>3</span>Diagram</button><button type="button" data-pane="review" aria-pressed="false"><span>4</span>Deploy</button></nav>
+    <div id="studio-workbench" data-pane="describe"><div id="studio-composer">
+    <details id="voice-options"><summary>Describe with your voice</summary>
+    <section class="card" id="voice-card">
+      <div class="eyebrow">VOICE → REVIEWED ACTION</div><h2>Say what you want to build.</h2>
+      <p>Record up to 60 seconds. Audio goes to your Relay backend for local transcription and is discarded. Review the words before using AI or planning a change.</p>
+      <div class="button-row"><button id="voice-record" class="quiet" type="button">Record scenario ●</button><button id="voice-stop" class="quiet" type="button" disabled>Stop recording</button></div>
+      <label>Or choose a recording (up to 5 MB)<input id="voice-file" type="file" accept="audio/*"></label>
+      <p id="voice-state" role="status" aria-live="polite">Microphone access starts only when you press Record.</p>
+      <label>Review transcript<textarea id="voice-transcript" rows="3" maxlength="2000" placeholder="Your transcript appears here. Correct names and IDs before continuing."></textarea></label>
+      <div class="button-row"><button id="voice-order" class="quiet" type="button">Use as iFlow description →</button><button id="voice-goal" class="quiet" type="button">Use as task description →</button></div>
+    </section>
+    </details>
+    <section class="card" id="designer-card">
+      <label for="design-package">Destination package</label><div class="package-picker"><select id="design-package"><option value="">Connect to load your packages</option></select><button id="refresh-design-packages" type="button" class="quiet">Refresh</button></div>
+      <p id="iflow-destination" class="destination" aria-live="polite">Select an existing package to continue.</p>
+      <div class="composer-intro"><span class="spark">✦</span><h2>Let’s build your next integration.</h2><p>Start with the source, destination and what should happen in between.</p></div><p>Tell Relay the input, processing rules and expected output. It will show what it understood before anything is created.</p>
+      <select id="scenario-pattern" hidden aria-label="Generation mode"><option value="auto">Native BPMN composition</option></select>
+      <div class="examples" aria-label="Scenario examples"><button type="button" data-example="invoice">Invoice processing</button><button type="button" data-example="inventory">Inventory alerts</button><button type="button" data-example="employee">Employee normalization</button></div>
+      <label for="design-scenario">Describe your integration</label><textarea id="design-scenario" rows="4" placeholder="Example: Receive HTTPS JSON with an invoices array. Validate id and amount, calculate tax, route large totals for review, then return the processed invoices."></textarea>
+      <button id="description-build" class="primary full" type="button">Plan my integration →</button><p class="hint">First, review the requirements and any missing details. Nothing is deployed.</p>
+      <details id="clarification-editor"><summary>Add details or answer questions</summary><label for="scenario-answers">Additional requirements and answers</label><textarea id="scenario-answers" rows="3" maxlength="4000" placeholder="Answer the questions from the plan, or explain what to change…"></textarea></details>
+      <details class="sample-editor"><summary>Acceptance criteria · sample input and expected output</summary><p>Optional. Generation stops if the design does not produce your expected result.</p><label for="acceptance-input">Sample JSON input</label><textarea id="acceptance-input" rows="4" placeholder='{"customer":{"name":"Ada"}}'></textarea><label for="acceptance-output">Expected JSON output</label><textarea id="acceptance-output" rows="4" placeholder='{"name":"ADA"}'></textarea></details>
+      <div class="understanding"><strong>Relay understood</strong><span id="design-explanation" role="status">Describe the input, processing rules and output. Relay will derive the flow structure and ask for missing adapter details.</span></div>
+      <details id="manual-design" hidden><summary>Legacy order template</summary>
+      <label for="design-artifact">New iFlow ID</label><input id="design-artifact" value="OrderBatchProcessor">
+      <label for="design-endpoint">HTTPS path</label><input id="design-endpoint" value="/relay/orders/process">
+      <button id="design-propose" class="quiet">Interpret with these target IDs ↗</button>
+      <div class="fields"><div><label for="design-threshold">Review above total</label><input id="design-threshold" type="number" value="1000" min="1" max="1000000000"></div><div><label for="design-limit">Maximum orders</label><input id="design-limit" type="number" value="100" min="1" max="100"></div></div>
+      <button id="design-compile" class="primary full">Build configured order pattern →</button>
+      </details>
+
+      <details><summary>SAP knowledge references</summary><p class="hint">Curated SAP patterns, not a complete Discover catalog mirror.</p><ul><li><a href="https://hub.sap.com/package/DesignGuidelinesPatterns/overview" target="_blank" rel="noopener">Discover · Enterprise Integration Patterns</a></li><li><a href="https://help.sap.com/docs/integration-suite/isuite-integrations-and-apis/handle-exceptions-when-using-splitter-pattern" target="_blank" rel="noopener">SAP · Splitter exception handling</a></li></ul></details>
+    </section></div>
+    <section id="studio-plan" aria-label="Solution plan">
+      <div class="plan-heading"><span class="eyebrow">UNDERSTAND BEFORE BUILDING</span><h2 id="solution-title">Your integration plan</h2><p id="solution-summary">Describe a scenario to see the requirements, proposed flows and questions here.</p><span id="solution-status" class="pill">Waiting for your idea</span></div>
+      <div id="solution-content" hidden><h3>Requirements</h3><ul id="solution-requirements" class="requirement-list"></ul><h3>Proposed architecture</h3><div id="solution-flows"></div><div id="solution-blocker-section" hidden><h3>Before we can build</h3><ul id="solution-blockers"></ul></div><div id="solution-question-section" hidden><h3>A few details to confirm</h3><ol id="solution-questions"></ol></div><details id="solution-assumptions-section"><summary>Assumptions to review</summary><ul id="solution-assumptions"></ul></details><p id="solution-test-status" class="test-result"></p><details><summary>SAP references used</summary><ul id="solution-sources"></ul></details><details><summary>Plan fingerprint & model</summary><pre id="solution-meta"></pre></details><div class="button-row"><button id="solution-build" class="primary" disabled>Build this reviewed plan →</button><button id="solution-edit" class="quiet">Refine requirements</button></div><p class="hint">Building prepares the exact diagram and ZIP. A separate approval is required to deploy.</p></div>
+    </section>
+    <section id="studio-canvas" aria-label="Flow canvas">
+      <div id="canvas-empty"><div class="canvas-empty-top"><span>FLOW CANVAS</span><span>BPMN 2.0</span></div><div class="canvas-placeholder"><svg viewBox="0 0 320 100" aria-hidden="true"><path d="M45 50H135M185 50H275" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 5"/><circle cx="35" cy="50" r="17"/><rect x="130" y="25" width="60" height="50" rx="8"/><circle cx="285" cy="50" r="17"/></svg><h2>Your flow starts with an idea</h2><p>Describe the source, business rules and expected output. Your generated SAP diagram will appear here.</p><span class="canvas-note">Nothing is created in SAP until you approve.</span></div></div>
+      <div id="design-preview" hidden><div class="diagram-header"><div><span class="eyebrow">DESIGN REVIEW</span><h2>Flow canvas</h2></div><span class="pill">BPMN 2.0</span></div><div class="diagram-tools"><button id="diagram-fit" type="button">Fit diagram</button><button id="diagram-plus" type="button" aria-label="Zoom in">＋</button><button id="diagram-minus" type="button" aria-label="Zoom out">−</button><button id="diagram-export" type="button">Export BPMN ↓</button></div><div id="bpmn-canvas" aria-label="Proposed SAP BPMN diagram"></div><p id="diagram-status" role="status"></p><div id="step-inspector"><strong>Select a step to inspect its configuration.</strong><pre id="step-properties" hidden></pre></div><details><summary>Processing steps</summary><ol id="design-steps"></ol></details><details><summary>Research & references</summary><ul id="research-sources"></ul></details><details><summary>Inspect design, scripts and test cases</summary><pre id="design-evidence"></pre></details><details><summary>Acceptance test result</summary><pre id="design-sample"></pre></details><div class="button-row"><button id="review-design" class="primary" type="button">Review & deploy →</button><button id="design-download" class="quiet">Download iFlow ZIP ↓</button><button id="design-use" class="primary">Review deployment plan →</button></div></div>
+    </section>
+    <aside id="studio-review" aria-label="Deployment review"><div id="review-empty"><span class="eyebrow">DEPLOYMENT REVIEW</span><h2>Review before it runs</h2><p>Generate a design to see its destination, changes and approval controls.</p><ol class="review-checklist"><li>Inspect the flow diagram</li><li>Check your sample output</li><li>Approve deployment to DEV</li></ol><div class="scope-note"><strong>Supported today</strong><p>HTTPS + JSON · mapping · calculations · splitter · router · filtering · error handling</p><p>Other adapters need additional implementation.</p></div></div></aside>
+    </div>
+  </section>
+  <section id="tab-advanced" hidden role="tabpanel" aria-label="Advanced tools">
+    <div class="page-heading"><h1>Advanced tools</h1><p>Deploy existing artifacts, upload ZIPs or build messaging templates.</p></div>
+    <section class="card"><div class="eyebrow">MESSAGING PATTERNS</div><h2>Decouple. Retry. Deliver.</h2><p>Build the shared JMS retry pattern and three Solace event layers. Solace designs upload without deployment until the broker is connected.</p><button id="messaging-build" class="quiet">Build messaging designs ↗</button><div id="messaging-designs" class="item-list"></div></section>
+    <form id="run-form" class="card composer">
+      <div class="section-heading"><h2>A little direction goes a long way.</h2><span class="pill subtle">DEV</span></div>
+      <label for="goal">What would you like to do?</label><textarea id="goal" rows="3" placeholder="Describe your task, including package and iFlow IDs…">Deploy artifact_id HelloWorld in package_id AgentSandbox, version active.</textarea>
+      <div class="draft-row"><span class="ai-label"><span aria-hidden="true">✧</span> FREE MODEL</span><button id="draft-ai" type="button" class="quiet">Help me plan ↗</button></div><p id="ai-result" class="hint">Only your goal is sent to the AI. Every change is yours to approve.</p><details class="target-settings"><summary>Workflow & targets <span>Configure</span></summary><label for="action">Workflow</label><select id="action"><option value="deploy">Deploy existing iFlow</option><option value="create_package">Create integration package</option><option value="upload">Upload new iFlow design only</option><option value="upload_deploy">Upload ZIP & deploy new iFlow</option><option value="create_partner_parameter">Create B2B partner parameter</option></select>
+      <div class="fields"><div id="package-field"><label for="package">Package ID</label><input id="package" value="AgentSandbox" required></div><div id="artifact-field"><label for="artifact">iFlow ID</label><input id="artifact" value="HelloWorld" required></div></div>
+      <div id="partner-fields" hidden><label for="partner-id">Partner ID</label><input id="partner-id" value="RelayTestPartner"><label for="parameter-id">Parameter ID</label><input id="parameter-id" value="RelayTestParameter"><label for="parameter-value">Parameter value</label><input id="parameter-value" value="test"></div><div id="name-field" hidden><label for="package-name">Package name</label><input id="package-name" value="Agent Sandbox"></div>
+      <div id="version-field"><label for="version">Version</label><input id="version" value="active"></div>
+      <div id="upload-field" hidden><label for="bundle">Exported iFlow bundle (.zip, up to 4 MB)</label><input id="bundle" type="file" accept=".zip"><p class="hint">New artifact IDs only. Bundle structure is checked before approval.</p></div>
+      </details>
+      <button id="plan-button" type="submit" class="primary full">Review my plan <span>→</span></button>
+      <div class="trust"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" aria-hidden="true"><path d="M8 1l5 2v4c0 4-5 7-5 7S3 11 3 7V3z"/><path d="m5 7 2 2 4-4"/></svg> Nothing changes without your approval.</div>
+    </form>
+  </section>
+    <section id="run" hidden>
+      <div id="creation-status" class="destination" role="status"></div><button id="view-created" class="quiet" hidden>View in package →</button>
+      <div class="run-heading"><div><div class="eyebrow">CURRENT RUN</div><h2 id="run-title">Deployment plan</h2></div><span id="run-status" class="pill"></span></div>
+      <div class="card" id="plan-card"><div class="section-heading"><h2>Change plan</h2><span class="mini-label" id="run-short"></span></div><p id="plan-goal"></p><ol id="operations"></ol><p id="risk" class="risk"></p>
+        <details><summary>Inspect before / after diff</summary><div class="diff"><div class="diff-label">− BEFORE</div><pre id="before"></pre><div class="diff-label added">+ PROPOSED</div><pre id="after"></pre></div></details>
+        <details id="bundle-details" hidden><summary>Bundle fingerprint & files</summary><pre id="bundle-info"></pre></details>
+        <p id="approval-message"></p><div id="approval-actions" class="button-row" hidden><button id="approve" class="primary">Approve & execute →</button><button id="reject" class="quiet danger">Reject</button></div>
+        <label><input type="checkbox" id="background-mode"> Execute approvals in the background</label><p class="hint">The backend must remain running. Follow progress in Activity.</p>
+        <button id="resume" class="quiet" hidden>Resume interrupted run</button>
+      </div>
+      <div class="card"><div class="section-heading"><h2>Execution timeline</h2><span class="live-label">● LIVE</span></div><ol id="timeline" class="timeline"></ol></div>
+      <div id="test-card" class="card" hidden><div class="section-heading"><h2>Generated smoke test</h2><button id="download-test" class="quiet">Download .py</button></div><p id="test-scope"></p><pre id="test-code"></pre></div>
+    </section>
+    <div id="empty-state" class="empty"><div class="workflow-strip"><span>Discover</span><i>→</i><span>Plan</span><i>→</i><span>Approve</span><i>→</i><span>Verify</span></div><p>A clear plan. A considered change. A complete record.</p></div>
+  <section id="tab-inventory" hidden><div class="section-heading"><h2>Packages</h2><button id="refresh-artifacts" class="quiet">Refresh ↻</button></div><div id="packages" class="item-list"></div><h2 id="selected-package-title" hidden></h2><div id="flows" class="item-list"></div><pre id="artifact-detail" hidden></pre></section>
+  <section id="tab-history" hidden><div class="section-heading"><h2>Recent runs</h2><button id="refresh-history" class="quiet">Refresh ↻</button></div><div id="history" class="item-list"></div><h2>Channel jobs</h2><button id="refresh-channel-jobs" class="quiet">Refresh jobs ↻</button><div id="channel-jobs" class="item-list"></div></section>
+  <section id="tab-capabilities" hidden><div class="section-heading"><h2>Service access</h2><button id="check-services" class="quiet">Check access ↻</button></div><p>Access checks are read-only. Partner Directory does not certify full B2B/TPM functionality.</p><button id="diagnose-sap" class="quiet">Diagnose SAP APIs ↗</button><button id="channel-status" class="quiet">Voice & WhatsApp status ↗</button><pre id="channel-detail" hidden></pre><div id="capabilities" class="item-list"></div><pre id="service-inventory" hidden></pre></section>
+  </div></div><footer><span><span class="footer-dot"></span> BUILT FOR YOUR WORKFLOW</span><a href="guide.html" target="_blank" rel="noopener">Extension guide ↗</a></footer>
+</main><script src="vendor/bpmn-viewer.js"></script><script src="panel.js" type="module"></script>
+</body></html>

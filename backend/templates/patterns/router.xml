@@ -1,0 +1,16 @@
+<ns0:exclusiveGateway xmlns:ns0="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:ns1="http:///com.sap.ifl.model/Ifl.xsd" default="SequenceFlow_52" id="ExclusiveGateway_5" name="Router">
+            <ns0:extensionElements>
+                <ns1:property>
+                    <key>throwException</key>
+                    <value>true</value>
+                </ns1:property>
+                <ns1:property>
+                    <key>raiseAlert</key>
+                    <value>true</value>
+                </ns1:property>
+            </ns0:extensionElements>
+            <ns0:incoming>SequenceFlow_19</ns0:incoming>
+            <ns0:outgoing>SequenceFlow_74</ns0:outgoing>
+            <ns0:outgoing>SequenceFlow_52</ns0:outgoing>
+        </ns0:exclusiveGateway>
+        

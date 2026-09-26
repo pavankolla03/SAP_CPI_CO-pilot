@@ -1,0 +1,108 @@
+{
+  "package_id": "RelayTest",
+  "package_name": "relay test",
+  "scenarios": [
+    {
+      "name": "order-routing",
+      "pattern": "batch_orders",
+      "artifact_id": "RelayOrders5c8b6d4c0861",
+      "endpoint_path": "/relay/orders/5c8b6d4c0861",
+      "run_id": "90b8a1f2-4fb6-4d7e-9d94-4c8fde45b5c2",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        2
+      ],
+      "http_status": 200,
+      "input": {
+        "orders": [
+          {
+            "id": "MULTI-1",
+            "amount": 20,
+            "quantity": 2
+          },
+          {
+            "id": "MULTI-2",
+            "amount": 600,
+            "quantity": 2
+          },
+          {
+            "id": "MULTI-3",
+            "amount": -1,
+            "quantity": 1
+          }
+        ]
+      },
+      "output": {
+        "orders": [
+          {
+            "id": "MULTI-1",
+            "status": "ACCEPTED",
+            "total": 40
+          },
+          {
+            "id": "MULTI-2",
+            "status": "REVIEW",
+            "total": 1200
+          },
+          {
+            "id": "MULTI-3",
+            "status": "REJECTED",
+            "total": 0
+          }
+        ],
+        "count": 3
+      }
+    },
+    {
+      "name": "customer-normalization",
+      "pattern": "json_transform",
+      "artifact_id": "RelayMapd386cbba3125",
+      "endpoint_path": "/relay/map/d386cbba3125",
+      "run_id": "349a7a76-2693-487c-a7d7-e509ebb507be",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        1
+      ],
+      "http_status": 200,
+      "input": {
+        "customer": {
+          "name": "Ada Lovelace",
+          "email": "ADA@EXAMPLE.COM"
+        }
+      },
+      "output": {
+        "customerName": "ADA LOVELACE",
+        "email": "ada@example.com"
+      }
+    },
+    {
+      "name": "payment-validation",
+      "pattern": "json_transform",
+      "artifact_id": "RelayMapf032ed8bd7c6",
+      "endpoint_path": "/relay/map/f032ed8bd7c6",
+      "run_id": "9ac509df-ef9c-4197-9d29-0ff7e1d8e867",
+      "model": "nvidia/nemotron-3-super-120b-a12b:free",
+      "key_slots": [
+        2
+      ],
+      "http_status": 200,
+      "input": {
+        "payment": {
+          "id": "PAY-7",
+          "amount": "45.50"
+        },
+        "currency": "usd"
+      },
+      "output": {
+        "paymentId": "PAY-7",
+        "amount": 45.5,
+        "currencyCode": "USD"
+      }
+    }
+  ],
+  "package_iflows": [
+    "RelayOrders5c8b6d4c0861",
+    "RelayMapd386cbba3125",
+    "RelayMapf032ed8bd7c6"
+  ]
+}

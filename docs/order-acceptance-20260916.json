@@ -1,0 +1,664 @@
+{
+  "date": "2026-09-16",
+  "package_id": "RelayAcceptance20260915",
+  "artifact_id": "RelayOrderBatch20260916V4",
+  "runtime_status": "STARTED",
+  "deployment_run": "44b78911-fb0b-4d2d-9b65-912e6c71f468",
+  "functional_cases": [
+    {
+      "case": "mixed routes",
+      "http_status": 200,
+      "passed": true,
+      "body": {
+        "orders": [
+          {
+            "id": "ORD-001",
+            "status": "ACCEPTED",
+            "total": 50
+          },
+          {
+            "id": "ORD-002",
+            "status": "REVIEW",
+            "total": 1500
+          },
+          {
+            "id": "ORD-003",
+            "status": "REJECTED",
+            "total": 0
+          }
+        ],
+        "count": 3
+      },
+      "message_id": "AGqqLkPdCggWejPMFdxyrqEM3wl1"
+    },
+    {
+      "case": "threshold boundary",
+      "http_status": 200,
+      "passed": true,
+      "body": {
+        "orders": [
+          {
+            "id": "BOUNDARY",
+            "status": "ACCEPTED",
+            "total": 1000
+          }
+        ],
+        "count": 1
+      },
+      "message_id": "AGqqLkRuwt6Pp5K29JBP1wmRY2SD"
+    },
+    {
+      "case": "malformed JSON",
+      "http_status": 400,
+      "passed": true,
+      "body": {
+        "error": "Invalid JSON",
+        "handler": "exception_subprocess"
+      },
+      "message_id": "AGqqLkQnLPZs87ydGkq57WD6eUKp"
+    },
+    {
+      "case": "duplicate ID",
+      "http_status": 400,
+      "passed": true,
+      "body": {
+        "error": "Duplicate order ID",
+        "handler": "exception_subprocess"
+      },
+      "message_id": "AGqqLkTaVEuWdJoENUXQQtoF-lIY"
+    },
+    {
+      "case": "empty batch",
+      "http_status": 400,
+      "passed": true,
+      "body": {
+        "error": "Invalid order count",
+        "handler": "exception_subprocess"
+      },
+      "message_id": "AGqqLkXUYj1wPQPRWA1WkFlVxJBb"
+    },
+    {
+      "case": "missing ID",
+      "http_status": 400,
+      "passed": true,
+      "body": {
+        "error": "Invalid order ID",
+        "handler": "exception_subprocess"
+      },
+      "message_id": "AGqqLkVLD9xPo61mNfD3GTgfNQCB"
+    },
+    {
+      "case": "invalid quantity",
+      "http_status": 200,
+      "passed": true,
+      "body": {
+        "orders": [
+          {
+            "id": "FRACTION",
+            "status": "REJECTED",
+            "total": 0
+          }
+        ],
+        "count": 1
+      },
+      "message_id": "AGqqLkWv5vRO2XAQW1iJqWEMy75s"
+    },
+    {
+      "case": "100 orders",
+      "http_status": 200,
+      "passed": true,
+      "body": {
+        "orders": [
+          {
+            "id": "ORD-0",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-1",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-2",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-3",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-4",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-5",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-6",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-7",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-8",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-9",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-10",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-11",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-12",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-13",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-14",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-15",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-16",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-17",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-18",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-19",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-20",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-21",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-22",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-23",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-24",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-25",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-26",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-27",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-28",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-29",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-30",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-31",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-32",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-33",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-34",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-35",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-36",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-37",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-38",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-39",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-40",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-41",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-42",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-43",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-44",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-45",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-46",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-47",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-48",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-49",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-50",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-51",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-52",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-53",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-54",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-55",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-56",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-57",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-58",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-59",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-60",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-61",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-62",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-63",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-64",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-65",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-66",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-67",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-68",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-69",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-70",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-71",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-72",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-73",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-74",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-75",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-76",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-77",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-78",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-79",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-80",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-81",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-82",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-83",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-84",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-85",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-86",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-87",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-88",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-89",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-90",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-91",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-92",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-93",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-94",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-95",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-96",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-97",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-98",
+            "status": "ACCEPTED",
+            "total": 1
+          },
+          {
+            "id": "ORD-99",
+            "status": "ACCEPTED",
+            "total": 1
+          }
+        ],
+        "count": 100
+      },
+      "message_id": "AGqqLkbAQP8AlVsSJdy8UibDZQp6"
+    },
+    {
+      "case": "101 orders",
+      "http_status": 400,
+      "passed": true,
+      "body": {
+        "error": "Invalid order count",
+        "handler": "exception_subprocess"
+      },
+      "message_id": "AGqqLkbzki62qlt7LRu0Y-Ae2MP-"
+    },
+    {
+      "case": "Per-order exception retains ID and continues to next order",
+      "http_status": 200,
+      "passed": true,
+      "body": {
+        "orders": [
+          {
+            "id": "FIRST",
+            "status": "ACCEPTED",
+            "total": 50
+          },
+          {
+            "id": "TEST-ERROR",
+            "status": "ERROR",
+            "reason": "Order processing failed"
+          },
+          {
+            "id": "AFTER",
+            "status": "ACCEPTED",
+            "total": 50
+          }
+        ],
+        "count": 3
+      },
+      "message_id": "AGqqLpmW64tmvVvQa4GsSU2qx_6k"
+    }
+  ],
+  "free_model": {
+    "model": "nvidia/nemotron-3-super-120b-a12b:free",
+    "reported_cost": 0
+  },
+  "limitations": [
+    "No downstream ERP writes",
+    "Curated knowledge references, not full Discover indexing",
+    "Synthetic exception fixture uses a separate endpoint",
+    "SAP graphical UI login requires session refresh"
+  ]
+}

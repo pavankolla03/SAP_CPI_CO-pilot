@@ -1,0 +1,6 @@
+[
+  {"id":"demo", "name":"Acme · Development", "mode":"demo", "environment":"DEV"},
+  {"id":"sap-dev", "name":"SAP DEV", "mode":"sap", "environment":"DEV",
+   "api_url":"https://YOUR-TMN-HOST/api/v1", "token_url":"https://YOUR-OAUTH-HOST/oauth/token",
+   "client_id_env":"SAP_DEV_CLIENT_ID", "client_secret_env":"SAP_DEV_CLIENT_SECRET", "allow_upload":false}
+]

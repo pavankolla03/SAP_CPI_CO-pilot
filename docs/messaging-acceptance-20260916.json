@@ -1,0 +1,127 @@
+{
+  "tested_at": "2026-09-16T18:16:41.013956+00:00",
+  "jms_package": "RelayGlobalRetryJMS",
+  "jms_runtime": "STARTED",
+  "assertions": {
+    "http_202": true,
+    "normal_processed": true,
+    "retry_twice_then_processed": true,
+    "exhausted_parked": true
+  },
+  "submissions": [
+    {
+      "case": "normal",
+      "status": 202,
+      "body": {
+        "id": "JMS_OK_181315",
+        "status": "QUEUED"
+      }
+    },
+    {
+      "case": "transient",
+      "status": 202,
+      "body": {
+        "id": "JMS_RETRY_181315",
+        "status": "QUEUED"
+      }
+    },
+    {
+      "case": "exhausted",
+      "status": 202,
+      "body": {
+        "id": "JMS_PARK_181315",
+        "status": "QUEUED"
+      }
+    }
+  ],
+  "final_logs": [
+    {
+      "message_id": "AGqq3D0uH6pR4rX1H4jwngZPuymX",
+      "status": "COMPLETED",
+      "properties": {
+        "RelayOutcome": "PARKED",
+        "RelayEventId": "JMS_PARK_181315"
+      }
+    },
+    {
+      "message_id": "AGqq3D1iIHV6SIWmg_dNgCEsGfTK",
+      "status": "COMPLETED",
+      "properties": {
+        "RelayOutcome": "PROCESSED",
+        "RelayRetryCount": "2",
+        "RelayEventId": "JMS_RETRY_181315"
+      }
+    },
+    {
+      "message_id": "AGqq3Dy5ERITbMTckmtu7REcvIbx",
+      "status": "COMPLETED",
+      "properties": {
+        "RelayOutcome": "PROCESSED",
+        "RelayRetryCount": "0",
+        "RelayEventId": "JMS_OK_181315"
+      }
+    }
+  ],
+  "queues": [
+    {
+      "name": "Relay_GlobalRetry_Parking",
+      "messages": "2"
+    },
+    {
+      "name": "Relay_GlobalRetry_Work",
+      "messages": "0"
+    }
+  ],
+  "solace": [
+    {
+      "artifact_id": "RelayEDAExperience",
+      "package_id": "RelaySolaceLayeredEDA",
+      "runtime": "NOT_DEPLOYED",
+      "configuration_keys": [
+        "SolaceHost",
+        "SolacePort",
+        "SolaceCredentialAlias",
+        "OutputTopic",
+        "SAP_ProfileId"
+      ]
+    },
+    {
+      "artifact_id": "RelayEDAProcess",
+      "package_id": "RelaySolaceLayeredEDA",
+      "runtime": "NOT_DEPLOYED",
+      "configuration_keys": [
+        "SolaceHost",
+        "SolacePort",
+        "SolaceCredentialAlias",
+        "InputQueue",
+        "OutputTopic",
+        "SAP_ProfileId"
+      ]
+    },
+    {
+      "artifact_id": "RelayEDASystem",
+      "package_id": "RelaySolaceLayeredEDA",
+      "runtime": "NOT_DEPLOYED",
+      "configuration_keys": [
+        "SolaceHost",
+        "SolacePort",
+        "SolaceCredentialAlias",
+        "InputQueue",
+        "OutputTopic",
+        "SAP_ProfileId"
+      ]
+    }
+  ],
+  "automated_tests": 64,
+  "ui_checks": [
+    "Messaging compiler returns five designs",
+    "Solace selects upload-only workflow",
+    "Both packages visible in live inventory"
+  ],
+  "limitations": [
+    "No Solace broker connection or end-to-end delivery test",
+    "No downstream ERP write or exactly-once guarantee",
+    "Voice and WhatsApp not yet implemented",
+    "Malformed parking hardening not fault-injected live"
+  ]
+}
