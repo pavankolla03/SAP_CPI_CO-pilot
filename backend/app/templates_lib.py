@@ -12,8 +12,6 @@ from pydantic import BaseModel, Field
 from .designer import StrictModel
 from .models import identifier
 
-from .models import identifier
-
 
 class TemplateForm(BaseModel):
     fields: list[str]

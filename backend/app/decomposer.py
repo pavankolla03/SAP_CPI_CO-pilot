@@ -11,6 +11,7 @@ from typing import Literal
 from pydantic import Field
 
 from .designer import StrictModel
+from .models import identifier
 
 
 class FlowRelationship(StrictModel):
