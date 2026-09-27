@@ -42,6 +42,8 @@ class State(TypedDict, total=False):
 
 
 class Agent:
+    AUTO_RESTART_THRESHOLD = 0.95  # restart when context is 95% full
+
     def __init__(self, settings):
         from pathlib import Path
         self.settings = settings
@@ -55,7 +57,8 @@ class Agent:
             self.saver = MemorySaver()
         self.clients = {key: DemoClient(t, self.store) if t.mode == 'demo' else SAPClient(t)
                         for key, t in self.tenants.items()}
-        self.lock = threading.Lock()  # This MVP runs exactly one API process/worker.
+        self.lock = threading.Lock()
+        self._restart_count = 0
         graph = StateGraph(State)
         nodes = {
             'do_discover': self.discover,
@@ -299,6 +302,24 @@ class Agent:
     def audit(self, s):
         self.event(s, 'audit', status=s['status'], plan_hash=s.get('plan_hash'), mode=self.tenants[s['tenant']].mode)
         return {}
+
+    def monitor_observe(self, run_id: str, tenant: str, artifact_id: str | None):
+        """Record deployment metrics and start E2E trace."""
+        try:
+            from .monitoring import Monitoring
+            from pathlib import Path
+            mon = Monitoring(str(Path(self.settings.data_dir) / 'monitoring.sqlite'))
+            trace = mon.start_trace(tenant, run_id, artifact_id or '', '')
+            return mon, trace
+        except Exception:
+            return None, None
+
+    def check_restart(self, context_usage_ratio: float) -> dict:
+        """Return restart decision if context usage exceeds threshold."""
+        if context_usage_ratio >= self.AUTO_RESTART_THRESHOLD:
+            self._restart_count += 1
+            return {'should_restart': True, 'reason': f'Context at {context_usage_ratio:.0%}', 'restart_count': self._restart_count}
+        return {'should_restart': False, 'restart_count': self._restart_count}
 
     def owner(self, run, principal):
         rows = self.store.query('SELECT * FROM runs WHERE id=? AND tenant=?', (run, principal.tenant_id))

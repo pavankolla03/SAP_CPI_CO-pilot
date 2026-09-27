@@ -26,6 +26,12 @@ from .designer import ScenarioRequest, CompileRequest, propose as propose_design
 from .b2b_designer import B2BSpec, propose_b2b, compile_b2b
 from .decomposer import DecompositionResult, propose_decomposition
 from .templates_lib import TemplateForm, IntegrationTemplate, list_templates, get_template, template_catalog
+from .knowledge_graph import KnowledgeGraph
+from .monitoring import Monitoring
+from .lifecycle import Lifecycle
+from .analytics import Analytics
+from .governance import Governance
+from .testing import Testing
 
 
 def create_app(settings=None):
@@ -41,6 +47,14 @@ def create_app(settings=None):
 
     voice = Transcriber(settings)
     channels = Channels(settings, agent, planner, voice)
+    data_dir = Path(settings.data_dir)
+    kg = KnowledgeGraph(str(data_dir / 'knowledge.sqlite'))
+    monitoring = Monitoring(str(data_dir / 'monitoring.sqlite'))
+    lifecycle = Lifecycle(str(data_dir / 'lifecycle.sqlite'))
+    analytics = Analytics(str(data_dir / 'analytics.sqlite'))
+    governance = Governance(str(data_dir / 'governance.sqlite'))
+    testing = Testing(str(data_dir / 'testing.sqlite'))
+    kg.seed_defaults(principal.tenant_id if False else 'global')
 
     @asynccontextmanager
     async def lifespan(app):
@@ -49,6 +63,12 @@ def create_app(settings=None):
         await run_in_threadpool(channels.close)
         agent.close()
         planner.close()
+        kg.close()
+        monitoring.close()
+        lifecycle.close()
+        analytics.close()
+        governance.close()
+        testing.close()
 
     app = FastAPI(title='SAP Integration Agent', version='0.1.0', lifespan=lifespan)
     app.state.channels = channels
@@ -325,6 +345,175 @@ def create_app(settings=None):
         except (ValueError, TypeError, KeyError, AttributeError):
             raise HTTPException(400, 'Webhook could not be accepted') from None
         return {'accepted': True}
+
+    # ---- Knowledge graph ----
+    @app.get('/v1/knowledge')
+    def kg_search(q: str = '', kind: str = '', principal=Depends(authenticated)):
+        return kg.search(q, kind=kind or None, tenant=principal.tenant_id)
+
+    @app.get('/v1/knowledge/{node_id}/similar')
+    def kg_similar(node_id: str, principal=Depends(authenticated)):
+        return kg.similar(node_id)
+
+    @app.post('/v1/knowledge/suggest')
+    def kg_suggest(body: dict, principal=Depends(operator)):
+        context = body.get('context', '')
+        return kg.suggest(context, tenant=principal.tenant_id)
+
+    @app.post('/v1/knowledge/nodes')
+    def kg_add(body: dict, principal=Depends(operator)):
+        result = kg.add_node(
+            kind=body.get('kind', 'pattern'),
+            name=body.get('name', ''),
+            content=body.get('content', {}),
+            tags=body.get('tags'),
+            tenant=principal.tenant_id,
+            node_id=body.get('id')
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'kg_node_add', result['id'], json.dumps(body))
+        return result
+
+    @app.get('/v1/knowledge/conventions')
+    def kg_conventions(principal=Depends(authenticated)):
+        return kg.team_conventions(principal.tenant_id)
+
+    # ---- Monitoring ----
+    @app.get('/v1/monitoring/dashboard')
+    def monitoring_dashboard(principal=Depends(authenticated)):
+        return monitoring.dashboard(principal.tenant_id)
+
+    @app.get('/v1/monitoring/alerts')
+    def monitoring_alerts(status: str = 'open', principal=Depends(authenticated)):
+        return monitoring.get_alerts(principal.tenant_id, status=status)
+
+    @app.post('/v1/monitoring/alerts/{alert_id}/resolve')
+    def monitoring_resolve(alert_id: str, principal=Depends(approver)):
+        monitoring.resolve_alert(alert_id, principal.tenant_id)
+        governance.audit(principal.tenant_id, principal.actor, 'alert_resolve', alert_id, '')
+        return {'status': 'resolved'}
+
+    @app.get('/v1/monitoring/traces/{trace_id}')
+    def monitoring_trace(trace_id: str, principal=Depends(authenticated)):
+        trace = monitoring.trace(trace_id, principal.tenant_id)
+        if not trace:
+            raise HTTPException(404, 'Trace not found')
+        return trace
+
+    # ---- Lifecycle ----
+    @app.post('/v1/versions')
+    def lifecycle_version(body: dict, principal=Depends(operator)):
+        result = lifecycle.version_artifact(
+            principal.tenant_id, body['artifact_id'], body['version'],
+            body.get('content', {}), principal.actor
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'version', result['id'], '')
+        return result
+
+    @app.post('/v1/promotions')
+    def lifecycle_promote(body: dict, principal=Depends(operator)):
+        result = lifecycle.promote(
+            principal.tenant_id, body['artifact_id'], body['version'],
+            body['from_env'], body['to_env'], principal.actor
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'promote', result['id'], f"{body['from_env']}->{body['to_env']}")
+        return result
+
+    @app.post('/v1/promotions/{promo_id}/approve')
+    def lifecycle_approve_promotion(promo_id: str, principal=Depends(approver)):
+        lifecycle.approve_promotion(promo_id, principal.tenant_id, principal.actor)
+        governance.audit(principal.tenant_id, principal.actor, 'promote_approve', promo_id, '')
+        return {'status': 'approved'}
+
+    @app.post('/v1/versions/rollback')
+    def lifecycle_rollback(body: dict, principal=Depends(operator)):
+        result = lifecycle.rollback(
+            principal.tenant_id, body['artifact_id'], body['target_version'],
+            principal.actor
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'rollback', result['id'], body['target_version'])
+        return result
+
+    @app.post('/v1/comments')
+    def lifecycle_comment(body: dict, principal=Depends(operator)):
+        result = lifecycle.add_comment(
+            principal.tenant_id, body['artifact_id'], principal.actor, body['body']
+        )
+        return result
+
+    @app.post('/v1/reviews')
+    def lifecycle_review(body: dict, principal=Depends(operator)):
+        result = lifecycle.review(
+            principal.tenant_id, body['artifact_id'], body['version'],
+            principal.actor, body['decision'], body.get('comments', '')
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'review', result['id'], body['decision'])
+        return result
+
+    @app.get('/v1/versions')
+    def lifecycle_versions(artifact_id: str = '', principal=Depends(authenticated)):
+        return lifecycle.versions(principal.tenant_id, artifact_id or None)
+
+    @app.get('/v1/promotions')
+    def lifecycle_promotions(status: str = '', principal=Depends(authenticated)):
+        return lifecycle.promotions(principal.tenant_id, status or None)
+
+    # ---- Analytics ----
+    @app.get('/v1/analytics/usage')
+    def analytics_usage(days: int = 7, principal=Depends(authenticated)):
+        return analytics.usage_report(principal.tenant_id, days=min(days, 90))
+
+    @app.get('/v1/analytics/throughput')
+    def analytics_throughput(hours: int = 24, principal=Depends(authenticated)):
+        return analytics.throughput_report(principal.tenant_id, hours=min(hours, 720))
+
+    @app.get('/v1/analytics/failures')
+    def analytics_failures(days: int = 7, principal=Depends(authenticated)):
+        return analytics.failure_clusters(principal.tenant_id, days=min(days, 90))
+
+    # ---- Governance ----
+    @app.get('/v1/audit')
+    def audit_log(action: str = '', principal=Depends(authenticated)):
+        if principal.role != 'approver':
+            raise HTTPException(403, 'Approver role required')
+        return governance.audit_log(principal.tenant_id, action or None)
+
+    @app.post('/v1/policies')
+    def governance_policy(body: dict, principal=Depends(approver)):
+        result = governance.policy(principal.tenant_id, body['name'], body['rules'])
+        governance.audit(principal.tenant_id, principal.actor, 'policy_create', result['id'], '')
+        return result
+
+    @app.get('/v1/policies')
+    def governance_policies(principal=Depends(authenticated)):
+        return governance.policies(principal.tenant_id)
+
+    # ---- Testing ----
+    @app.post('/v1/tests')
+    def test_generate(body: dict, principal=Depends(operator)):
+        result = testing.generate_test(
+            principal.tenant_id, body['artifact_id'], body['name'], body.get('scenario', {})
+        )
+        governance.audit(principal.tenant_id, principal.actor, 'test_generate', result['id'], '')
+        return result
+
+    @app.post('/v1/tests/{test_id}/run')
+    def test_run(test_id: str, principal=Depends(operator)):
+        return testing.run_test(test_id, principal.tenant_id)
+
+    @app.post('/v1/regression/suites')
+    def regression_create(body: dict, principal=Depends(operator)):
+        result = testing.regression_suite(
+            principal.tenant_id, body['package_id'], body['name'], body['artifact_ids']
+        )
+        return result
+
+    @app.post('/v1/regression/suites/{suite_id}/run')
+    def regression_run(suite_id: str, principal=Depends(operator)):
+        return testing.run_regression(suite_id, principal.tenant_id)
+
+    @app.get('/v1/tests')
+    def test_list(artifact_id: str = '', principal=Depends(authenticated)):
+        return testing.test_cases(principal.tenant_id, artifact_id or None)
 
     extension = Path(__file__).resolve().parents[2] / 'extension'
     app.mount('/ui', StaticFiles(directory=extension, html=True), name='side-panel-preview')
