@@ -57,20 +57,33 @@ class Agent:
                         for key, t in self.tenants.items()}
         self.lock = threading.Lock()  # This MVP runs exactly one API process/worker.
         graph = StateGraph(State)
-        for name in ('discover', 'plan', 'approve', 'execute', 'observe', 'validate', 'test', 'fix', 'redeploy', 'verify', 'audit'):
-            graph.add_node(name, getattr(self, name))
-        graph.add_edge(START, 'discover')
-        graph.add_edge('discover', 'plan')
-        graph.add_edge('plan', 'approve')
-        graph.add_conditional_edges('approve', lambda s: 'execute' if s['approved'] else 'audit')
-        graph.add_edge('execute', 'observe')
-        graph.add_edge('observe', 'validate')
-        graph.add_conditional_edges('validate', lambda s: 'test' if s['valid'] else 'fix')
-        graph.add_conditional_edges('test', lambda s: 'verify' if s['valid'] else 'fix')
-        graph.add_conditional_edges('fix', lambda s: 'redeploy' if s['approved'] else 'audit')
-        graph.add_edge('redeploy', 'observe')
-        graph.add_edge('verify', 'audit')
-        graph.add_edge('audit', END)
+        nodes = {
+            'do_discover': self.discover,
+            'do_plan': self.plan,
+            'do_approve': self.approve,
+            'do_execute': self.execute,
+            'do_observe': self.observe,
+            'do_validate': self.validate,
+            'do_test': self.test,
+            'do_fix': self.fix,
+            'do_redeploy': self.redeploy,
+            'do_verify': self.verify,
+            'do_audit': self.audit,
+        }
+        for name, fn in nodes.items():
+            graph.add_node(name, fn)
+        graph.add_edge(START, 'do_discover')
+        graph.add_edge('do_discover', 'do_plan')
+        graph.add_edge('do_plan', 'do_approve')
+        graph.add_conditional_edges('do_approve', lambda s: 'do_execute' if s['approved'] else 'do_audit')
+        graph.add_edge('do_execute', 'do_observe')
+        graph.add_edge('do_observe', 'do_validate')
+        graph.add_conditional_edges('do_validate', lambda s: 'do_test' if s['valid'] else 'do_fix')
+        graph.add_conditional_edges('do_test', lambda s: 'do_verify' if s['valid'] else 'do_fix')
+        graph.add_conditional_edges('do_fix', lambda s: 'do_redeploy' if s['approved'] else 'do_audit')
+        graph.add_edge('do_redeploy', 'do_observe')
+        graph.add_edge('do_verify', 'do_audit')
+        graph.add_edge('do_audit', END)
         self.graph = graph.compile(checkpointer=self.saver)
 
     def close(self):
