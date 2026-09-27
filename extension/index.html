@@ -193,6 +193,21 @@ a{color:var(--copper);text-decoration:none;}
   .split,.builder-body{flex-direction:column;}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:14px;font-weight:600;}
+.modal-body{padding:18px;font-size:13px;color:var(--text-dim);line-height:1.6;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--border);}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;width:420px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
+.modal-title{font-size:14px;font-weight:600;}
+.modal-body{padding:18px;font-size:13px;color:var(--text-dim);line-height:1.6;}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;padding:12px 18px;border-top:1px solid var(--border);}
 </style>
 </head>
 <body>
@@ -217,7 +232,7 @@ a{color:var(--copper);text-decoration:none;}
       <div class="top-bar-title" id="view-title">iFlow Agent</div>
       <div style="display:flex;align-items:center;gap:10px;">
         <div class="conn"><span class="dot" id="conn-dot"></span><span id="conn-text">Offline</span></div>
-        <button class="btn" id="new-task-btn">＋ New</button>
+        <button class="btn" id="new-task-btn">+ New</button>
       </div>
     </header>
 
@@ -231,8 +246,8 @@ a{color:var(--copper);text-decoration:none;}
 
         <div class="card" id="mode-card">
           <div style="display:flex;gap:12px;margin-bottom:14px;">
-            <button class="nav-item active" id="mode-auto" style="flex:1;text-align:center;margin:0;">✦ Smart Agent</button>
-            <button class="nav-item" id="mode-guided" style="flex:1;text-align:center;margin:0;">☰ Guided</button>
+            <button class="nav-item active" id="mode-auto" style="flex:1;text-align:center;margin:0;">Smart Agent</button>
+            <button class="nav-item" id="mode-guided" style="flex:1;text-align:center;margin:0;">Guided</button>
           </div>
           <p class="card-desc" id="mode-desc">Full autonomous: propose → decompose → compile → review.</p>
         </div>
@@ -241,10 +256,10 @@ a{color:var(--copper);text-decoration:none;}
           <div class="wizard-panel visible" data-step="1" id="step-1">
             <div class="card">
               <div class="steps">
-                <span class="step active">1&nbsp; Describe</span>
-                <span class="step">2&nbsp; Plan</span>
-                <span class="step">3&nbsp; Build</span>
-                <span class="step">4&nbsp; Review</span>
+                <span class="step active">1 Describe</span>
+                <span class="step">2 Plan</span>
+                <span class="step">3 Build</span>
+                <span class="step">4 Review</span>
               </div>
               <div class="field">
                 <label class="label" for="agent-pkg">Target package</label>
@@ -274,10 +289,10 @@ a{color:var(--copper);text-decoration:none;}
           <div class="wizard-panel" data-step="2" id="step-2">
             <div class="card">
               <div class="steps">
-                <span class="step active">1&nbsp; Describe</span>
-                <span class="step active">2&nbsp; Plan</span>
-                <span class="step">3&nbsp; Build</span>
-                <span class="step">4&nbsp; Review</span>
+                <span class="step active">1 Describe</span>
+                <span class="step active">2 Plan</span>
+                <span class="step">3 Build</span>
+                <span class="step">4 Review</span>
               </div>
               <div id="plan-loading" class="empty-state" hidden>
                 <span class="spinner" style="width:28px;height:28px;border-width:3px;"></span>
@@ -305,12 +320,12 @@ a{color:var(--copper);text-decoration:none;}
           <div class="wizard-panel" data-step="3" id="step-3">
             <div class="card">
               <div class="steps">
-                <span class="step active">1&nbsp; Describe</span>
-                <span class="step active">2&nbsp; Plan</span>
-                <span class="step active">3&nbsp; Build</span>
-                <span class="step">4&nbsp; Review</span>
+                <span class="step active">1 Describe</span>
+                <span class="step active">2 Plan</span>
+                <span class="step active">3 Build</span>
+                <span class="step">4 Review</span>
               </div>
-              <div id="build-loading" class="empty-state">
+              <div id="build-loading" class="empty-state" hidden>
                 <span class="spinner" style="width:28px;height:28px;border-width:3px;"></span>
                 <div class="empty-title mt-1" id="build-title">Compiling iFlow…</div>
                 <div class="empty-desc" id="build-desc">Generating BPMN, scripts, and artifacts.</div>
@@ -329,10 +344,10 @@ a{color:var(--copper);text-decoration:none;}
           <div class="wizard-panel" data-step="4" id="step-4">
             <div class="card">
               <div class="steps">
-                <span class="step active">1&nbsp; Describe</span>
-                <span class="step active">2&nbsp; Plan</span>
-                <span class="step active">3&nbsp; Build</span>
-                <span class="step active">4&nbsp; Review</span>
+                <span class="step active">1 Describe</span>
+                <span class="step active">2 Plan</span>
+                <span class="step active">3 Build</span>
+                <span class="step active">4 Review</span>
               </div>
               <div class="card-head">
                 <div><p class="card-title">Deployment Review</p><p class="card-desc">Inspect before deploying to SAP CPI.</p></div>
@@ -425,8 +440,8 @@ a{color:var(--copper);text-decoration:none;}
         </div>
         <div class="card">
           <div style="display:flex;gap:10px;margin-bottom:14px;">
-            <button class="nav-item active" id="msg-jms" style="flex:1;text-align:center;margin:0;">↻ JMS Retry</button>
-            <button class="nav-item" id="msg-solace" style="flex:1;text-align:center;margin:0;">◫ Solace Mesh</button>
+            <button class="nav-item active" id="msg-jms" style="flex:1;text-align:center;margin:0;">JMS Retry</button>
+            <button class="nav-item" id="msg-solace" style="flex:1;text-align:center;margin:0;">Solace Mesh</button>
           </div>
           <div class="field"><label class="label" for="msg-pkg">Package</label><select class="select" id="msg-pkg"><option value="">Connect to load packages</option></select></div>
           <div class="row">
@@ -522,487 +537,18 @@ a{color:var(--copper);text-decoration:none;}
   </div>
 </div>
 
-<script>
-'use strict';
-const S = {
-  token: sessionStorage.getItem('cpi_token') || '',
-  backend: localStorage.getItem('cpi_backend') || 'http://127.0.0.1:8000',
-  principal: null, connected: false, view: 'agent',
-  packages: [], agentMode: 'auto', msgPattern: 'jms-retry',
-  wizard: { step: 1, planId: null, plan: null, compile: null },
-  b2b: { compile: null },
-};
-const $ = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const show = el => { if (el) el.hidden = false; };
-const hide = el => { if (el) el.hidden = true; };
+<!-- Modal overlay -->
+<div id="modal-overlay" class="modal-overlay" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Confirm</div>
+      <button class="btn btn-ghost btn-icon" id="modal-close">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer"></div>
+  </div>
+</div>
 
-async function api(path, opts = {}) {
-  const url = `${S.backend}${path}`;
-  const headers = { 'Content-Type': 'application/json' };
-  if (S.token) headers['Authorization'] = `Bearer ${S.token}`;
-  const res = await fetch(url, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
-  if (res.status === 401) { disconnect(); throw new Error('Unauthorized'); }
-  if (!res.ok) { const t = await res.text().catch(() => res.statusText); throw new Error(`${res.status}: ${t}`); }
-  if (res.status === 204) return null;
-  return res.json();
-}
-
-function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-function notice(msg, type = 'info') {
-  const el = $('#conn-notice');
-  if (!el) return;
-  el.innerHTML = `<div class="alert alert-${type}">${esc(msg)}</div>`;
-}
-
-function updateConn() {
-  const dot = $('#conn-dot'), text = $('#conn-text');
-  if (S.connected) { dot.className = 'dot on'; text.textContent = S.principal?.tenant_name || 'Connected'; }
-  else { dot.className = 'dot'; text.textContent = 'Offline'; }
-}
-
-function setStatus(el, status, text) {
-  el.className = `pill pill-${status}`;
-  el.textContent = text || status;
-}
-
-async function connect() {
-  const backend = $('#set-backend').value.trim() || S.backend;
-  const token = $('#set-token').value.trim();
-  if (!token) { notice('Enter an access token.', 'error'); return; }
-  S.backend = backend; S.token = token;
-  localStorage.setItem('cpi_backend', backend);
-  sessionStorage.setItem('cpi_token', token);
-  $('#connect-btn').disabled = true;
-  $('#connect-btn').textContent = 'Connecting…';
-  try {
-    const me = await api('/v1/me');
-    S.principal = me; S.connected = true;
-    notice(`Connected to ${me.tenant_name} (${me.environment})`, 'success');
-    updateConn();
-    await loadAll();
-  } catch (e) {
-    S.connected = false;
-    notice(`Connection failed: ${e.message}`, 'error');
-  } finally {
-    $('#connect-btn').disabled = false;
-    $('#connect-btn').textContent = 'Connect →';
-  }
-}
-
-function disconnect() {
-  S.token = ''; S.principal = null; S.connected = false; S.packages = [];
-  sessionStorage.removeItem('cpi_token');
-  updateConn();
-}
-
-async function loadAll() {
-  if (!S.connected) return;
-  await loadPackages();
-  loadTemplates();
-}
-
-// ---- Navigation ----
-function navigate(view) {
-  S.view = view;
-  $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === view));
-  $$('.view').forEach(v => v.classList.remove('active'));
-  const section = $(`#${view}`);
-  if (section) { section.classList.add('active'); section.scrollTop = 0; }
-  const titles = { 'v-agent': 'iFlow Agent', 'v-b2b': 'B2B / TPM', 'v-apis': 'APIs', 'v-messaging': 'Messaging', 'v-templates': 'Templates', 'v-inventory': 'Packages', 'v-activity': 'Activity', 'v-connections': 'Connections', 'v-settings': 'Settings' };
-  $('#view-title').textContent = titles[view] || view;
-}
-
-// ---- Wizard ----
-function showStep(n) {
-  S.wizard.step = n;
-  $$('.wizard-panel').forEach(p => p.classList.toggle('visible', +p.dataset.step === n));
-  const steps = $$('#wizard .steps');
-  steps.forEach(bar => {
-    const items = bar.querySelectorAll('.step');
-    items.forEach((s, i) => s.classList.toggle('active', i < n));
-  });
-}
-
-// ---- Analyze ----
-async function analyze() {
-  const scenario = $('#agent-scenario').value.trim();
-  if (!scenario) { notice('Describe your integration.', 'error'); return; }
-  const pkg = $('#agent-pkg').value || undefined;
-  const pattern = $('#agent-pattern').value;
-  navigate('v-agent');
-  showStep(2);
-  $('#plan-loading').hidden = false;
-  hide($('#plan-result'));
-  try {
-    const result = await api('/v1/designs/propose', { method: 'POST', body: JSON.stringify({ description: scenario, pattern, package_id: pkg }) });
-    S.wizard.plan = result;
-    S.wizard.planId = result.id || result.plan_id;
-    renderPlan(result);
-  } catch (e) {
-    $('#plan-loading').hidden = true;
-    show($('#plan-result'));
-    notice(`Analysis failed: ${e.message}`, 'error');
-  }
-}
-
-function renderPlan(result) {
-  $('#plan-loading').hidden = true;
-  show($('#plan-result'));
-  $('#plan-title').textContent = result.title || 'Integration Plan';
-  $('#plan-summary').textContent = result.summary || '';
-
-  if (result.requirements?.length) {
-    show($('#plan-reqs'));
-    $('#plan-reqs-list').innerHTML = result.requirements.map(r => `<li>${esc(r)}</li>`).join('');
-  } else hide($('#plan-reqs'));
-
-  if (result.sub_flows?.length || result.architecture?.length) {
-    show($('#plan-arch'));
-    const flows = result.sub_flows || result.architecture || [];
-    $('#plan-subflows').innerHTML = flows.map((f, i) => `
-      <div class="subflow-card"><div class="subflow-header"><span class="subflow-num">${i+1}</span><span class="subflow-name">${esc(f.name || f.id || `Flow ${i+1}`)}</span><span class="tag ${f.type==='trigger'?'tag-copper':f.type==='process'?'tag-steel':'tag-steel'}">${esc(f.type||'process')}</span></div>
-      <div class="subflow-desc">${esc(f.description||f.summary||'')}</div>
-      ${f.inputs?.length?`<div class="subflow-meta"><span class="tag tag-steel">In: ${f.inputs.length}</span></div>`:''}${f.outputs?.length?`<div class="subflow-meta"><span class="tag tag-teal">Out: ${f.outputs.length}</span></div>`:''}</div>`).join('');
-  } else hide($('#plan-arch'));
-
-  if (result.blockers?.length) { show($('#plan-blockers')); $('#plan-blockers-list').innerHTML = result.blockers.map(b=>`<li>${esc(b)}</li>`).join(''); }
-  else hide($('#plan-blockers'));
-
-  if (result.questions?.length) { show($('#plan-questions')); $('#plan-questions-list').innerHTML = result.questions.map(q=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">${esc(q)}</div>`).join(''); }
-  else hide($('#plan-questions'));
-
-  if (result.assumptions?.length) { show($('#plan-assumptions')); $('#plan-assumptions-list').innerHTML = result.assumptions.map(a=>`<li>${esc(a)}</li>`).join(''); }
-  else hide($('#plan-assumptions'));
-
-  const st = $('#plan-status');
-  if (result.blockers?.length) { setStatus(st, 'red', 'Blocked'); }
-  else if (result.questions?.length) { setStatus(st, 'amber', 'Needs info'); }
-  else { setStatus(st, 'teal', 'Ready'); }
-}
-
-// ---- Build ----
-async function buildFromPlan() {
-  if (!S.wizard.plan) { notice('No plan available.', 'error'); return; }
-  navigate('v-agent');
-  showStep(3);
-  $('#build-loading').hidden = false;
-  hide($('#build-result'));
-  try {
-    let result;
-    const planId = S.wizard.planId || S.wizard.plan.id || S.wizard.plan.plan_id;
-    try {
-      result = await api('/v1/designs/compile', { method: 'POST', body: JSON.stringify({ plan_id: planId, description: $('#agent-scenario').value, package_id: $('#agent-pkg').value || undefined }) });
-    } catch {
-      result = await api('/v1/scenarios/compile', { method: 'POST', body: JSON.stringify({ description: $('#agent-scenario').value, pattern: $('#agent-pattern').value, package_id: $('#agent-pkg').value || undefined }) });
-    }
-    S.wizard.compile = result;
-    renderBuild(result);
-  } catch (e) {
-    $('#build-loading').hidden = true;
-    show($('#build-result'));
-    $('#build-title').textContent = 'Build issue';
-    $('#build-desc').textContent = e.message;
-    notice(`Build failed: ${e.message}`, 'error');
-  }
-}
-
-function renderBuild(result) {
-  $('#build-loading').hidden = true;
-  show($('#build-result'));
-  $('#build-title').textContent = 'Build Complete';
-  $('#build-desc').textContent = 'iFlow compiled. Review before deploying.';
-  const flows = result.sub_flows || result.flows || result.bpmn || [];
-  const el = $('#build-subflows');
-  if (flows.length) {
-    el.innerHTML = flows.map((f, i) => `
-      <div class="subflow-card"><div class="subflow-header"><span class="subflow-num">${i+1}</span><span class="subflow-name">${esc(f.name||f.id||`Sub-flow ${i+1}`)}</span><span class="tag tag-teal">COMPILED</span></div>
-      <div style="background:var(--surface-2);border-radius:4px;padding:10px;font-size:11px;font-family:var(--font-mono);max-height:150px;overflow-y:auto;white-space:pre-wrap;color:var(--text-dim);margin-left:30px;">${esc(JSON.stringify(f,null,2))}</div></div>`).join('');
-  } else {
-    el.innerHTML = `<pre class="code-block">${esc(JSON.stringify(result,null,2))}</pre>`;
-  }
-}
-
-// ---- Review ----
-function showReview() {
-  navigate('v-agent');
-  showStep(4);
-  const result = S.wizard.compile;
-  if (!result) return;
-  const flows = result.sub_flows || result.flows || result.bpmn || [];
-  const diagram = $('#review-diagram');
-  if (flows.length) {
-    diagram.innerHTML = flows.map((f, i) => {
-      const type = i===0?'trigger':i===flows.length-1?'output':'process';
-      const icon = type==='trigger'?'▶':type==='output'?'■':'◇';
-      const parts = [];
-      if (i>0) parts.push(`<span class="arrow">→</span>`);
-      parts.push(`<span class="node ${type}">${icon} ${esc(f.name||f.id||'')}</span>`);
-      return parts.join('');
-    }).join('');
-  } else { diagram.innerHTML = '<span class="text-muted text-xs">No diagram available.</span>'; }
-  show($('#review-diagram-section'));
-
-  if (result.config||result.configuration) { show($('#review-config')); $('#review-config-content').textContent = JSON.stringify(result.config||result.configuration,null,2); }
-  if (result.bundle||result.zip||result.files) { show($('#review-bundle')); $('#review-bundle-content').textContent = JSON.stringify(result.bundle||result.zip||result.files,null,2); }
-  if (result.sample_input||result.samples?.input) { show($('#review-samples')); $('#review-input').textContent = JSON.stringify(result.sample_input||result.samples.input,null,2); $('#review-output').textContent = JSON.stringify(result.sample_output||result.samples.output,null,2); }
-}
-
-// ---- Deploy ----
-async function deploy() {
-  const result = S.wizard.compile;
-  if (!result) return;
-  const modal = $('#deploy-output');
-  show(modal);
-  modal.scrollIntoView({ behavior: 'smooth' });
-  const statusEl = $('#deploy-status'), descEl = $('#deploy-desc'), tl = $('#deploy-timeline');
-  setStatus(statusEl, 'steel', 'Deploying…');
-  descEl.textContent = 'Uploading iFlow to SAP CPI.';
-  tl.innerHTML = `<div class="t-item"><span class="t-dot" style="background:var(--steel);"></span><div class="t-content"><p class="t-title">Uploading iFlow</p><p class="t-time">Just now</p></div></div>`;
-  try {
-    const deployResult = await api('/v1/runs', { method: 'POST', body: JSON.stringify({ action: 'upload_deploy', goal: `Deploy ${result.id||result.artifact_id||'GeneratedFlow'}`, package_id: $('#agent-pkg').value, artifact_id: result.id||result.artifact_id||'GeneratedFlow', version: $('#agent-version').value||'active' }) });
-    const runId = deployResult.run_id||deployResult.id;
-    if (runId) {
-      const run = await pollRun(runId);
-      setStatus(statusEl, 'teal', 'Deployed');
-      descEl.textContent = `Run ${runId} completed.`;
-      tl.innerHTML += `<div class="t-item"><span class="t-dot" style="background:var(--teal);"></span><div class="t-content"><p class="t-title">Deployment complete</p><p class="t-time">${run.status||'Success'}</p></div></div>`;
-      notice(`iFlow deployed. Run: ${runId}`, 'success');
-    } else {
-      setStatus(statusEl, 'teal', 'Queued');
-      descEl.textContent = 'Deployment request accepted.';
-    }
-  } catch (e) {
-    setStatus(statusEl, 'red', 'Failed');
-    descEl.textContent = e.message;
-    tl.innerHTML += `<div class="t-item"><span class="t-dot" style="background:var(--red);"></span><div class="t-content"><p class="t-title">Deployment failed</p><p class="t-time">${esc(e.message)}</p></div></div>`;
-    notice(`Deployment failed: ${e.message}`, 'error');
-  }
-}
-
-async function pollRun(id, max=20) {
-  for (let i=0;i<max;i++) {
-    try { const r=await api(`/v1/runs/${id}`); if(r.status&&['completed','deployed','success','failed','error'].includes(r.status)) return r; } catch {}
-    await sleep(2000);
-  }
-  return {id,status:'unknown'};
-}
-
-// ---- B2B ----
-async function proposeB2B() {
-  const body = { package_id: $('#b2b-pkg').value||undefined, partner_id: $('#b2b-partner').value.trim(), standard: $('#b2b-standard').value, agreement_profile: $('#b2b-agreement').value.trim(), receiver_port: $('#b2b-receiver').value.trim() };
-  if (!body.partner_id) { notice('Enter a Partner ID.', 'error'); return; }
-  try {
-    const result = await api('/v1/b2b/propose', { method: 'POST', body: JSON.stringify(body) });
-    S.b2b.compile = result;
-    show($('#b2b-result'));
-    $('#b2b-result-title').textContent = `B2B: ${body.partner_id}`;
-    $('#b2b-result-desc').textContent = `${body.standard} · ${body.agreement_profile||'default'}`;
-    $('#b2b-result-content').textContent = JSON.stringify(result, null, 2);
-  } catch (e) { notice(`B2B propose failed: ${e.message}`, 'error'); }
-}
-
-async function compileB2B() {
-  if (!S.b2b.compile) { notice('Propose a design first.', 'error'); return; }
-  try {
-    const result = await api('/v1/b2b/compile', { method: 'POST', body: JSON.stringify(S.b2b.compile) });
-    $('#b2b-result-content').textContent = JSON.stringify(result, null, 2);
-    notice('B2B design compiled.', 'success');
-  } catch (e) { notice(`B2B compile failed: ${e.message}`, 'error'); }
-}
-
-// ---- APIs ----
-async function buildAPI() {
-  const body = { package_id: $('#api-pkg').value||undefined, name: $('#api-name').value.trim(), base_path: $('#api-path').value.trim(), method: $('#api-method').value, format: $('#api-format').value };
-  if (!body.name) { notice('Enter an API name.', 'error'); return; }
-  try {
-    const result = await api('/v1/designs/api/compile', { method: 'POST', body: JSON.stringify(body) });
-    show($('#api-result'));
-    $('#api-result-desc').textContent = `${body.name} · ${body.method} ${body.base_path}`;
-    $('#api-result-content').textContent = JSON.stringify(result, null, 2);
-  } catch (e) { notice(`API build failed: ${e.message}`, 'error'); }
-}
-
-// ---- Messaging ----
-async function buildMsg() {
-  const pattern = S.msgPattern;
-  const body = { pattern, package_id: $('#msg-pkg').value||undefined, jms_url: $('#msg-jms-url').value.trim(), queue: $('#msg-queue').value.trim() };
-  if (!body.jms_url && !body.queue) body.description = pattern==='jms-retry' ? 'Build JMS retry pattern with exponential backoff, dead letter queue, and monitoring.' : 'Build Solace event mesh with guaranteed delivery, topic hierarchy, and replay logging.';
-  try {
-    const result = await api('/v1/designs/messaging/compile', { method: 'POST', body: JSON.stringify(body) });
-    show($('#msg-result'));
-    $('#msg-result-desc').textContent = `${pattern==='jms-retry'?'JMS Retry':'Solace'} pattern compiled`;
-    $('#msg-result-content').textContent = JSON.stringify(result, null, 2);
-  } catch (e) { notice(`Messaging build failed: ${e.message}`, 'error'); }
-}
-
-// ---- Templates ----
-async function loadTemplates() {
-  try {
-    const data = await api('/v1/templates');
-    const templates = data.templates || [];
-    const el = $('#tpl-list');
-    if (!templates.length) { el.innerHTML = '<div class="empty-state"><div class="empty-desc">No templates available.</div></div>'; return; }
-    el.innerHTML = `<div class="board">${templates.map(t => `<div><div class="col-head"><span class="dot deployed"></span>${esc(t.category||'Template')}</div><div class="card-item c-deployed" data-tpl="${esc(t.id)}"><span class="tag tag-copper">${esc(t.complexity||'')}</span><p>${esc(t.name||t.id)}</p><p class="card-desc" style="font-size:11px;margin:4px 0 0;">${esc(t.description||'')}</p></div></div>`).join('')}</div>`;
-    $$('[data-tpl]', el).forEach(card => card.addEventListener('click', () => selectTemplate(card.dataset.tpl)));
-  } catch (e) { $('#tpl-list').innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`; }
-}
-
-async function selectTemplate(id) {
-  try {
-    const tpl = await api(`/v1/templates/${encodeURIComponent(id)}`);
-    $('#tpl-title').textContent = tpl.name || id;
-    $('#tpl-desc').textContent = tpl.description || '';
-    $('#tpl-form').innerHTML = (tpl.parameters||[]).map(p => `<div class="field"><label class="label" for="tp-${esc(p.name)}">${esc(p.label||p.name)}</label><input class="input tpl-p" data-p="${esc(p.name)}" value="${esc(p.default||'')}" placeholder="${esc(p.hint||'')}"></div>`).join('');
-    hide($('#tpl-list')); show($('#tpl-detail'));
-  } catch (e) { notice(e.message, 'error'); }
-}
-
-// ---- Packages ----
-async function loadPackages() {
-  try {
-    S.packages = await api('/v1/packages');
-    const selects = ['#agent-pkg','#b2b-pkg','#api-pkg','#msg-pkg'];
-    selects.forEach(sel => {
-      const el = $(sel); if (!el) return;
-      el.innerHTML = '<option value="">Select package</option>' + S.packages.map(p => `<option value="${esc(p.Id)}">${esc(p.Id)} — ${esc(p.Name)}</option>`).join('');
-    });
-    renderPackages();
-  } catch (e) { console.error('loadPackages', e); }
-}
-
-function renderPackages() {
-  const el = $('#pkgs-list');
-  if (!S.packages.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">◫</div><div class="empty-title">No packages</div><div class="empty-desc">Connect to load packages.</div></div>'; return; }
-  el.innerHTML = `<div class="board">${S.packages.map(p => `<div><div class="card-item c-deployed"><span class="tag tag-steel">Package</span><p>${esc(p.Id)}</p><p class="card-desc" style="font-size:11px;margin:4px 0 0;">${esc(p.Name||'')}</p></div></div>`).join('')}</div>`;
-}
-
-// ---- Runs ----
-async function loadRuns() {
-  try {
-    const runs = await api('/v1/runs');
-    const el = $('#runs-list');
-    if (!runs?.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">◷</div><div class="empty-title">No activity</div></div>'; return; }
-    el.innerHTML = `<div class="timeline">${runs.map(r => `<div class="t-item"><span class="t-dot" style="background:var(--steel);"></span><div class="t-content"><p class="t-title">${esc(r.id)}</p><p class="t-time">${new Date(r.created).toLocaleString()}</p></div></div>`).join('')}</div>`;
-  } catch (e) { console.error(e); }
-}
-
-// ---- Connections ----
-async function loadConn() {
-  try {
-    const caps = await api('/v1/capabilities');
-    const diag = await api('/v1/diagnostics');
-    const el = $('#conn-output');
-    el.textContent = JSON.stringify({ capabilities: caps, diagnostics: diag }, null, 2);
-    el.style.display = 'block';
-  } catch (e) { $('#conn-output').textContent = `Error: ${e.message}`; $('#conn-output').style.display = 'block'; }
-}
-
-// ---- Downloads ----
-function downloadJson(name, data) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href);
-}
-
-// ---- Examples ----
-const EXAMPLES = {
-  invoice: 'Receive HTTPS JSON with an invoices array. Validate invoice_id and amount, calculate tax at 8%, enrich with customer data, route disputed invoices for manual review, then return processed invoices.',
-  inventory: 'Receive inventory updates via HTTPS POST. Validate product_id and stock levels. Trigger alerts when stock falls below threshold. Aggregate changes per warehouse.',
-  order: 'Receive order messages from external system. Map to SAP IDoc format, validate business rules (credit check, duplicates), split large orders into batches, route rush orders for priority processing.',
-  b2b: 'Set up B2B integration with Walmart. Use EDIFACT ORDERS D96A standard. Configure partner parameters for interchange control. Map incoming ORDERS to internal order format.',
-};
-
-// ---- Init ----
-function init() {
-  // Nav
-  $$('.nav-item[data-view]').forEach(item => item.addEventListener('click', () => navigate(item.dataset.view)));
-
-  // Connection
-  $('#connect-btn').addEventListener('click', connect);
-  $('#disconnect-btn').addEventListener('click', () => { disconnect(); notice('Disconnected.', 'info'); });
-
-  // New task
-  $('#new-task-btn').addEventListener('click', () => {
-    S.wizard = { step: 1, planId: null, plan: null, compile: null };
-    $('#agent-scenario').value = '';
-    hide($('#deploy-output'));
-    navigate('v-agent');
-    showStep(1);
-  });
-
-  // Mode
-  $('#mode-auto').addEventListener('click', () => { S.agentMode='auto'; $('#mode-auto').classList.add('active'); $('#mode-guided').classList.remove('active'); $('#mode-desc').textContent='Full autonomous: propose → decompose → compile → review.'; });
-  $('#mode-guided').addEventListener('click', () => { S.agentMode='guided'; $('#mode-guided').classList.add('active'); $('#mode-auto').classList.remove('active'); $('#mode-desc').textContent='Step-by-step with review at each stage.'; });
-
-  // Examples
-  $$('[data-example]').forEach(btn => btn.addEventListener('click', () => { const k=btn.dataset.example; if(EXAMPLES[k]) $('#agent-scenario').value=EXAMPLES[k]; }));
-
-  // Wizard nav
-  $('#analyze-btn').addEventListener('click', analyze);
-  $('#plan-back').addEventListener('click', () => showStep(1));
-  $('#plan-build').addEventListener('click', buildFromPlan);
-  $('#build-back').addEventListener('click', () => showStep(2));
-  $('#build-review').addEventListener('click', showReview);
-  $('#build-download').addEventListener('click', () => { if(S.wizard.compile) downloadJson(`${S.wizard.compile.id||S.wizard.compile.artifact_id||'design'}.json`, S.wizard.compile); });
-  $('#review-back').addEventListener('click', () => showStep(3));
-  $('#review-deploy').addEventListener('click', deploy);
-  $('#review-download').addEventListener('click', () => { if(S.wizard.compile) downloadJson(`${S.wizard.compile.id||S.wizard.compile.artifact_id||'design'}.json`, S.wizard.compile); });
-
-  // B2B
-  $('#b2b-propose').addEventListener('click', proposeB2B);
-  $('#b2b-compile').addEventListener('click', compileB2B);
-  $('#b2b-download').addEventListener('click', () => { if(S.b2b.compile) downloadJson('b2b-design.json', S.b2b.compile); });
-
-  // APIs
-  $('#api-build').addEventListener('click', buildAPI);
-  $('#api-download').addEventListener('click', () => { const el=$('#api-result-content'); if(el) downloadJson('api-design.json', JSON.parse(el.textContent)); });
-
-  // Messaging
-  $('#msg-jms').addEventListener('click', () => { S.msgPattern='jms-retry'; $('#msg-jms').classList.add('active'); $('#msg-solace').classList.remove('active'); });
-  $('#msg-solace').addEventListener('click', () => { S.msgPattern='solace'; $('#msg-solace').classList.add('active'); $('#msg-jms').classList.remove('active'); });
-  $('#msg-build').addEventListener('click', buildMsg);
-  $('#msg-download').addEventListener('click', () => { const el=$('#msg-result-content'); if(el) downloadJson('messaging-pattern.json', JSON.parse(el.textContent)); });
-
-  // Templates
-  $('#refresh-tpl').addEventListener('click', loadTemplates);
-  $('#tpl-back').addEventListener('click', () => { hide($('#tpl-detail')); show($('#tpl-list')); });
-  $('#tpl-build').addEventListener('click', () => { const params={}; $$('.tpl-p').forEach(el=>params[el.dataset.p]=el.value); notice(`Building template with: ${JSON.stringify(params)}`); });
-
-  // Inventory
-  $('#refresh-pkgs').addEventListener('click', loadPackages);
-
-  // Activity
-  $('#refresh-runs').addEventListener('click', loadRuns);
-
-  // Connections
-  $('#check-conn').addEventListener('click', loadConn);
-  $('#diagnose').addEventListener('click', async () => { try { const d=await api('/v1/diagnostics'); $('#conn-output').textContent=JSON.stringify(d,null,2); $('#conn-output').style.display='block'; } catch(e){notice(e.message,'error');} });
-
-  // Settings
-  $('#set-backend').value = S.backend;
-  $('#set-token').value = S.token;
-
-  updateConn();
-}
-
-async function autoConnect() {
-  if (!S.token) return;
-  S.backend = localStorage.getItem('cpi_backend') || 'http://127.0.0.1:8000';
-  $('#set-backend').value = S.backend;
-  $('#set-token').value = S.token;
-  try {
-    const me = await api('/v1/me');
-    S.principal = me; S.connected = true;
-    updateConn();
-    await loadAll();
-  } catch { /* silent */ }
-}
-
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init(); autoConnect(); });
-else { init(); autoConnect(); }
-</script>
+<script src="panel.js"></script>
 </body>
 </html>

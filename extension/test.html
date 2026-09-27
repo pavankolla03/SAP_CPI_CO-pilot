@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Test</title>
+<style>
+body{background:#15161A;color:#EDEBE6;font-family:system-ui;padding:40px;}
+h1{color:#C1622B;} .ok{color:#4FA98C;} .err{color:#C1453D;}
+</style>
+</head>
+<body>
+<h1>CPI Copilot — Smoke Test</h1>
+<div id="out"></div>
+<script>
+const out = document.getElementById('out');
+async function check() {
+  out.innerHTML += '<p>DOM loaded OK</p>';
+  try {
+    const r = await fetch('http://localhost:8000/health');
+    out.innerHTML += `<p class="ok">Backend reachable: ${r.status}</p>`;
+    const j = await r.json();
+    out.innerHTML += `<pre>${JSON.stringify(j,null,2)}</pre>`;
+  } catch(e) {
+    out.innerHTML += `<p class="err">Backend unreachable: ${e.message}</p>`;
+  }
+}
+check();
+</script>
+</body>
+</html>
