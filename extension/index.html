@@ -225,6 +225,14 @@ a{color:var(--copper);text-decoration:none;}
     <div class="nav-item" data-view="v-activity"><span class="nav-icon">◷</span> <span>Activity</span></div>
     <div class="nav-item" data-view="v-connections"><span class="nav-icon">◎</span> <span>Connections</span></div>
     <div class="nav-item" data-view="v-settings"><span class="nav-icon">⚙</span> <span>Settings</span></div>
+    <div class="nav-section">Quality</div>
+    <div class="nav-item" data-view="v-monitoring"><span class="nav-icon">◉</span> <span>Monitoring</span></div>
+    <div class="nav-item" data-view="v-tests"><span class="nav-icon">☰</span> <span>Tests</span></div>
+    <div class="nav-section">Insights</div>
+    <div class="nav-item" data-view="v-lifecycle"><span class="nav-icon">⇆</span> <span>Lifecycle</span></div>
+    <div class="nav-item" data-view="v-analytics"><span class="nav-icon">◫</span> <span>Analytics</span></div>
+    <div class="nav-item" data-view="v-knowledge"><span class="nav-icon">⬡</span> <span>Knowledge</span></div>
+    <div class="nav-item" data-view="v-governance"><span class="nav-icon">⚑</span> <span>Governance</span></div>
   </nav>
 
   <div class="main">
@@ -518,6 +526,108 @@ a{color:var(--copper);text-decoration:none;}
 
       <!-- ===== SETTINGS VIEW ===== -->
       <section id="v-settings" class="view">
+
+      <!-- ===== MONITORING VIEW ===== -->
+      <section id="v-monitoring" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Monitoring</h1><p class="card-desc" style="margin:5px 0 0;">Dashboards, alerts, and end-to-end message tracing.</p></div>
+          <button class="btn secondary" id="refresh-dashboard">Refresh ↻</button>
+        </div>
+        <div id="mon-dashboard">
+          <div class="grid-4" id="mon-metrics"><div class="metric"><p class="l">Deployments</p><p class="v" id="m-deploys">—</p></div><div class="metric"><p class="l">Success Rate</p><p class="v" id="m-rate">—</p></div><div class="metric"><p class="l">Open Alerts</p><p class="v" id="m-alerts">—</p></div><div class="metric"><p class="l">Avg Duration</p><p class="v" id="m-dur">—</p></div></div>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title">Open Alerts</p></div></div>
+            <div id="mon-alerts"><div class="empty-state"><div class="empty-desc">No alerts.</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title">Trace</p></div></div>
+            <div class="field"><label class="label" for="mon-trace-id">Trace ID</label><input class="input" id="mon-trace-id" placeholder="tr:YYYYMMDDHHMMSSmmm"></div>
+            <button class="btn secondary" id="mon-trace-btn">Lookup Trace</button>
+            <pre class="code-block" id="mon-trace-result" style="margin-top:14px;max-height:300px;display:none;"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TESTS VIEW ===== -->
+      <section id="v-tests" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Tests</h1><p class="card-desc" style="margin:5px 0 0;">Test cases and regression suites.</p></div>
+          <button class="btn" id="new-test-btn">+ Generate Test</button>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Test Cases</p></div></div>
+          <div id="tests-list"><div class="empty-state"><div class="empty-desc">No tests. Generate one from an artifact.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Regression Suites</p></div></div>
+          <div id="regr-list"><div class="empty-state"><div class="empty-desc">No suites.</div></div></div>
+        </div>
+      </section>
+
+      <!-- ===== LIFECYCLE VIEW ===== -->
+      <section id="v-lifecycle" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Lifecycle</h1><p class="card-desc" style="margin:5px 0 0;">Versions, promotions, rollbacks, comments, reviews.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Versions</p></div></div>
+          <div id="lifecycle-versions"><div class="empty-state"><div class="empty-desc">No versions yet.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Promotions</p></div></div>
+          <div id="lifecycle-promotions"><div class="empty-state"><div class="empty-desc">No promotions.</div></div></div>
+        </div>
+      </section>
+
+      <!-- ===== ANALYTICS VIEW ===== -->
+      <section id="v-analytics" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Analytics</h1><p class="card-desc" style="margin:5px 0 0;">Usage, throughput, and failure trends.</p></div>
+          <button class="btn secondary" id="refresh-analytics">Refresh ↻</button>
+        </div>
+        <div class="grid-4" id="analytics-metrics">
+          <div class="metric"><p class="l">Total Actions</p><p class="v" id="a-actions">—</p></div>
+          <div class="metric"><p class="l">Success Rate</p><p class="v" id="a-rate">—</p></div>
+          <div class="metric"><p class="l">Messages</p><p class="v" id="a-msgs">—</p></div>
+          <div class="metric"><p class="l">Failures</p><p class="v" id="a-fails">—</p></div>
+        </div>
+        <div class="card"><pre class="code-block" id="analytics-detail" style="max-height:400px;">Connect to view analytics.</pre></div>
+      </section>
+
+      <!-- ===== KNOWLEDGE VIEW ===== -->
+      <section id="v-knowledge" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Knowledge</h1><p class="card-desc" style="margin:5px 0 0;">Patterns, mappings, and team conventions.</p></div>
+          <button class="btn secondary" id="refresh-kg">Refresh ↻</button>
+        </div>
+        <div class="card">
+          <div class="field"><label class="label" for="kg-query">Search</label><input class="input" id="kg-query" placeholder="Search patterns, mappings..."></div>
+          <div class="form-actions"><button class="btn" id="kg-search-btn">Search</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Conventions</p></div></div>
+          <div id="kg-conventions"><div class="empty-state"><div class="empty-desc">Connect to load conventions.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Suggestions</p></div></div>
+          <div id="kg-suggestions"><div class="empty-state"><div class="empty-desc">Describe a scenario to get suggestions.</div></div></div>
+        </div>
+      </section>
+
+      <!-- ===== GOVERNANCE VIEW ===== -->
+      <section id="v-governance" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Governance</h1><p class="card-desc" style="margin:5px 0 0;">Audit logs, RBAC policies, credential management.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Audit Log</p></div></div>
+          <div id="gov-audit"><div class="empty-state"><div class="empty-desc">Connect to view audit log.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><p class="card-title">Policies</p></div></div>
+          <div id="gov-policies"><div class="empty-state"><div class="empty-desc">No policies configured.</div></div></div>
+        </div>
+      </section>
         <div class="view-head">
           <div><h1 style="font-size:19px;font-weight:500;margin:0;">Settings</h1><p class="card-desc" style="margin:5px 0 0;">Connect the Copilot to your SAP CPI tenant.</p></div>
         </div>
