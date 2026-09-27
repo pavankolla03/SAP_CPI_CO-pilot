@@ -6,7 +6,17 @@ import time
 from typing import TypedDict
 from uuid import uuid4
 
-from langgraph.checkpoint.sqlite import SqliteSaver
+try:
+    from langgraph.checkpoint.sqlite import SqliteSaver
+    _CHECKPOINTER = 'sqlite'
+except ImportError:
+    try:
+        from langgraph.checkpoint import SqliteSaver  # older path
+        _CHECKPOINTER = 'sqlite'
+    except ImportError:
+        from langgraph.checkpoint.memory import MemorySaver
+        _CHECKPOINTER = 'memory'
+
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
@@ -38,8 +48,11 @@ class Agent:
         self.tenants = settings.tenants()
         Path(settings.data_dir).mkdir(parents=True, exist_ok=True)
         self.store = Store(str(Path(settings.data_dir) / 'app.sqlite'))
-        self.connection = sqlite3.connect(str(Path(settings.data_dir) / 'checkpoints.sqlite'), check_same_thread=False)
-        self.saver = SqliteSaver(self.connection)
+        if _CHECKPOINTER == 'sqlite':
+            self.connection = sqlite3.connect(str(Path(settings.data_dir) / 'checkpoints.sqlite'), check_same_thread=False)
+            self.saver = SqliteSaver(self.connection)
+        else:
+            self.saver = MemorySaver()
         self.clients = {key: DemoClient(t, self.store) if t.mode == 'demo' else SAPClient(t)
                         for key, t in self.tenants.items()}
         self.lock = threading.Lock()  # This MVP runs exactly one API process/worker.
@@ -63,7 +76,8 @@ class Agent:
     def close(self):
         for client in self.clients.values():
             client.close()
-        self.connection.close()
+        if hasattr(self, 'connection') and self.connection:
+            self.connection.close()
         self.store.db.close()
 
     @staticmethod

@@ -1,105 +1,1008 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Relay · Integration Agent</title><link rel="stylesheet" href="panel.css"><link rel="stylesheet" href="workspace.css"><link rel="stylesheet" href="studio.css"></head>
-<body>
-<main class="app-shell">
-  <header class="app-header"><a class="brand" href="index.html" aria-label="Relay home"><span class="mark" aria-hidden="true"><i></i><i></i><i></i></span><span>relay<span class="subtitle">YOUR SAP COPILOT</span></span></a><div class="header-actions"><span class="extension-label">SIDE PANEL</span><button id="new-task" class="icon" aria-label="New task" title="New task">＋</button><button id="settings-toggle" class="icon" aria-label="Connection settings" title="Connection settings"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="2.5" fill="currentColor"/><circle cx="15" cy="17" r="2.5" fill="currentColor"/></svg></button></div></header>
-  <section class="workspace-bar"><span class="dot" id="connection-dot"></span><span id="workspace-name">Connect a workspace</span><span class="pill" id="mode">OFFLINE</span></section>
-  <div class="workspace-layout">
-  <nav class="tabs" aria-label="Workspace views" role="tablist" aria-orientation="vertical"><span class="nav-label">BUILD</span><button data-tab="package-create" role="tab" aria-selected="false">＋ Create package</button><button class="selected" data-tab="agent" role="tab" aria-selected="true">⌁ Create iFlow</button><span class="nav-label">WORKSPACE</span><button data-tab="inventory" role="tab" aria-selected="false">Packages & iFlows</button><button data-tab="history" role="tab" aria-selected="false">Activity</button><button data-tab="advanced" role="tab" aria-selected="false">Advanced tools</button><button data-tab="capabilities" role="tab" aria-selected="false">Connections</button></nav>
-  <div class="scroll-area">
-  <section id="settings" class="card">
-    <div class="eyebrow">01 / GET CONNECTED</div><h2>Make yourself at home.</h2><p>Use your backend access token. SAP credentials stay on the server.</p>
-    <label for="backend">Backend URL</label><input id="backend" value="http://127.0.0.1:8000" spellcheck="false">
-    <label for="token">Access token</label><input id="token" type="password" placeholder="Paste your local access token" autocomplete="off">
-    <div class="button-row"><button id="connect" class="primary">Connect workspace <span>→</span></button><button id="disconnect" class="quiet">Disconnect</button></div>
-    <small>Token is kept for this browser session only.</small>
-  </section>
-  <div id="notice" role="status" aria-live="polite" hidden></div>
-  <section id="tab-package-create" hidden role="tabpanel" aria-label="Create package">
-    <div class="page-heading"><div class="eyebrow">ORGANIZE YOUR INTEGRATIONS</div><h1>Create package</h1><p>Create a container for your iFlows, then select it on the Create iFlow screen.</p></div>
-    <form id="package-create-form" class="card"><label for="new-package-name">Package name</label><input id="new-package-name" required maxlength="160" placeholder="Order integrations"><label for="new-package-id">Package ID</label><input id="new-package-id" required pattern="[A-Za-z0-9_.-]{1,160}" maxlength="160" placeholder="OrderIntegrations"><p>Review the package, then confirm creation below.</p><button id="package-create-button" class="primary full" type="submit">Review package →</button></form>
-  </section>
-  <section id="tab-agent" role="tabpanel" aria-label="Create iFlow">
-    <div class="studio-heading"><div><div class="eyebrow">YOUR INTEGRATION WORKSPACE</div><h1>What would you like to integrate?</h1><p>Describe it. Shape the plan. Build with confidence.</p></div><span class="studio-badge">SAP DEV · Approval protected</span></div>
-    <nav class="studio-switcher" aria-label="Design workspace"><button type="button" data-pane="describe" aria-pressed="true"><span>1</span>Describe</button><button type="button" data-pane="plan" aria-pressed="false"><span>2</span>Plan</button><button type="button" data-pane="diagram" aria-pressed="false"><span>3</span>Diagram</button><button type="button" data-pane="review" aria-pressed="false"><span>4</span>Deploy</button></nav>
-    <div id="studio-workbench" data-pane="describe"><div id="studio-composer">
-    <details id="voice-options"><summary>Describe with your voice</summary>
-    <section class="card" id="voice-card">
-      <div class="eyebrow">VOICE → REVIEWED ACTION</div><h2>Say what you want to build.</h2>
-      <p>Record up to 60 seconds. Audio goes to your Relay backend for local transcription and is discarded. Review the words before using AI or planning a change.</p>
-      <div class="button-row"><button id="voice-record" class="quiet" type="button">Record scenario ●</button><button id="voice-stop" class="quiet" type="button" disabled>Stop recording</button></div>
-      <label>Or choose a recording (up to 5 MB)<input id="voice-file" type="file" accept="audio/*"></label>
-      <p id="voice-state" role="status" aria-live="polite">Microphone access starts only when you press Record.</p>
-      <label>Review transcript<textarea id="voice-transcript" rows="3" maxlength="2000" placeholder="Your transcript appears here. Correct names and IDs before continuing."></textarea></label>
-      <div class="button-row"><button id="voice-order" class="quiet" type="button">Use as iFlow description →</button><button id="voice-goal" class="quiet" type="button">Use as task description →</button></div>
-    </section>
-    </details>
-    <section class="card" id="designer-card">
-      <label for="design-package">Destination package</label><div class="package-picker"><select id="design-package"><option value="">Connect to load your packages</option></select><button id="refresh-design-packages" type="button" class="quiet">Refresh</button></div>
-      <p id="iflow-destination" class="destination" aria-live="polite">Select an existing package to continue.</p>
-      <div class="composer-intro"><span class="spark">✦</span><h2>Let’s build your next integration.</h2><p>Start with the source, destination and what should happen in between.</p></div><p>Tell Relay the input, processing rules and expected output. It will show what it understood before anything is created.</p>
-      <select id="scenario-pattern" hidden aria-label="Generation mode"><option value="auto">Native BPMN composition</option></select>
-      <div class="examples" aria-label="Scenario examples"><button type="button" data-example="invoice">Invoice processing</button><button type="button" data-example="inventory">Inventory alerts</button><button type="button" data-example="employee">Employee normalization</button></div>
-      <label for="design-scenario">Describe your integration</label><textarea id="design-scenario" rows="4" placeholder="Example: Receive HTTPS JSON with an invoices array. Validate id and amount, calculate tax, route large totals for review, then return the processed invoices."></textarea>
-      <button id="description-build" class="primary full" type="button">Plan my integration →</button><p class="hint">First, review the requirements and any missing details. Nothing is deployed.</p>
-      <details id="clarification-editor"><summary>Add details or answer questions</summary><label for="scenario-answers">Additional requirements and answers</label><textarea id="scenario-answers" rows="3" maxlength="4000" placeholder="Answer the questions from the plan, or explain what to change…"></textarea></details>
-      <details class="sample-editor"><summary>Acceptance criteria · sample input and expected output</summary><p>Optional. Generation stops if the design does not produce your expected result.</p><label for="acceptance-input">Sample JSON input</label><textarea id="acceptance-input" rows="4" placeholder='{"customer":{"name":"Ada"}}'></textarea><label for="acceptance-output">Expected JSON output</label><textarea id="acceptance-output" rows="4" placeholder='{"name":"ADA"}'></textarea></details>
-      <div class="understanding"><strong>Relay understood</strong><span id="design-explanation" role="status">Describe the input, processing rules and output. Relay will derive the flow structure and ask for missing adapter details.</span></div>
-      <details id="manual-design" hidden><summary>Legacy order template</summary>
-      <label for="design-artifact">New iFlow ID</label><input id="design-artifact" value="OrderBatchProcessor">
-      <label for="design-endpoint">HTTPS path</label><input id="design-endpoint" value="/relay/orders/process">
-      <button id="design-propose" class="quiet">Interpret with these target IDs ↗</button>
-      <div class="fields"><div><label for="design-threshold">Review above total</label><input id="design-threshold" type="number" value="1000" min="1" max="1000000000"></div><div><label for="design-limit">Maximum orders</label><input id="design-limit" type="number" value="100" min="1" max="100"></div></div>
-      <button id="design-compile" class="primary full">Build configured order pattern →</button>
-      </details>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CPI Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#15161A; --surface:#1D1F24; --surface-2:#262930; --border:#33363D;
+  --text:#EDEBE6; --text-dim:#9DA0A8; --text-faint:#6B6E76;
+  --copper:#C1622B; --copper-dim:#3A2A20;
+  --steel:#6C93B8; --steel-dim:#23303C;
+  --amber:#D9A441; --amber-dim:#3A3120;
+  --teal:#4FA98C; --teal-dim:#1E3530;
+  --red:#C1453D; --red-dim:#3A2220;
+  --font-sans:'IBM Plex Sans',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none;}
+input,textarea,select{font:inherit;color:inherit;}
+a{color:var(--copper);text-decoration:none;}
+[hidden]{display:none!important;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--text-faint);}
 
-      <details><summary>SAP knowledge references</summary><p class="hint">Curated SAP patterns, not a complete Discover catalog mirror.</p><ul><li><a href="https://hub.sap.com/package/DesignGuidelinesPatterns/overview" target="_blank" rel="noopener">Discover · Enterprise Integration Patterns</a></li><li><a href="https://help.sap.com/docs/integration-suite/isuite-integrations-and-apis/handle-exceptions-when-using-splitter-pattern" target="_blank" rel="noopener">SAP · Splitter exception handling</a></li></ul></details>
-    </section></div>
-    <section id="studio-plan" aria-label="Solution plan">
-      <div class="plan-heading"><span class="eyebrow">UNDERSTAND BEFORE BUILDING</span><h2 id="solution-title">Your integration plan</h2><p id="solution-summary">Describe a scenario to see the requirements, proposed flows and questions here.</p><span id="solution-status" class="pill">Waiting for your idea</span></div>
-      <div id="solution-content" hidden><h3>Requirements</h3><ul id="solution-requirements" class="requirement-list"></ul><h3>Proposed architecture</h3><div id="solution-flows"></div><div id="solution-blocker-section" hidden><h3>Before we can build</h3><ul id="solution-blockers"></ul></div><div id="solution-question-section" hidden><h3>A few details to confirm</h3><ol id="solution-questions"></ol></div><details id="solution-assumptions-section"><summary>Assumptions to review</summary><ul id="solution-assumptions"></ul></details><p id="solution-test-status" class="test-result"></p><details><summary>SAP references used</summary><ul id="solution-sources"></ul></details><details><summary>Plan fingerprint & model</summary><pre id="solution-meta"></pre></details><div class="button-row"><button id="solution-build" class="primary" disabled>Build this reviewed plan →</button><button id="solution-edit" class="quiet">Refine requirements</button></div><p class="hint">Building prepares the exact diagram and ZIP. A separate approval is required to deploy.</p></div>
-    </section>
-    <section id="studio-canvas" aria-label="Flow canvas">
-      <div id="canvas-empty"><div class="canvas-empty-top"><span>FLOW CANVAS</span><span>BPMN 2.0</span></div><div class="canvas-placeholder"><svg viewBox="0 0 320 100" aria-hidden="true"><path d="M45 50H135M185 50H275" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 5"/><circle cx="35" cy="50" r="17"/><rect x="130" y="25" width="60" height="50" rx="8"/><circle cx="285" cy="50" r="17"/></svg><h2>Your flow starts with an idea</h2><p>Describe the source, business rules and expected output. Your generated SAP diagram will appear here.</p><span class="canvas-note">Nothing is created in SAP until you approve.</span></div></div>
-      <div id="design-preview" hidden><div class="diagram-header"><div><span class="eyebrow">DESIGN REVIEW</span><h2>Flow canvas</h2></div><span class="pill">BPMN 2.0</span></div><div class="diagram-tools"><button id="diagram-fit" type="button">Fit diagram</button><button id="diagram-plus" type="button" aria-label="Zoom in">＋</button><button id="diagram-minus" type="button" aria-label="Zoom out">−</button><button id="diagram-export" type="button">Export BPMN ↓</button></div><div id="bpmn-canvas" aria-label="Proposed SAP BPMN diagram"></div><p id="diagram-status" role="status"></p><div id="step-inspector"><strong>Select a step to inspect its configuration.</strong><pre id="step-properties" hidden></pre></div><details><summary>Processing steps</summary><ol id="design-steps"></ol></details><details><summary>Research & references</summary><ul id="research-sources"></ul></details><details><summary>Inspect design, scripts and test cases</summary><pre id="design-evidence"></pre></details><details><summary>Acceptance test result</summary><pre id="design-sample"></pre></details><div class="button-row"><button id="review-design" class="primary" type="button">Review & deploy →</button><button id="design-download" class="quiet">Download iFlow ZIP ↓</button><button id="design-use" class="primary">Review deployment plan →</button></div></div>
-    </section>
-    <aside id="studio-review" aria-label="Deployment review"><div id="review-empty"><span class="eyebrow">DEPLOYMENT REVIEW</span><h2>Review before it runs</h2><p>Generate a design to see its destination, changes and approval controls.</p><ol class="review-checklist"><li>Inspect the flow diagram</li><li>Check your sample output</li><li>Approve deployment to DEV</li></ol><div class="scope-note"><strong>Supported today</strong><p>HTTPS + JSON · mapping · calculations · splitter · router · filtering · error handling</p><p>Other adapters need additional implementation.</p></div></div></aside>
-    </div>
-  </section>
-  <section id="tab-advanced" hidden role="tabpanel" aria-label="Advanced tools">
-    <div class="page-heading"><h1>Advanced tools</h1><p>Deploy existing artifacts, upload ZIPs or build messaging templates.</p></div>
-    <section class="card"><div class="eyebrow">MESSAGING PATTERNS</div><h2>Decouple. Retry. Deliver.</h2><p>Build the shared JMS retry pattern and three Solace event layers. Solace designs upload without deployment until the broker is connected.</p><button id="messaging-build" class="quiet">Build messaging designs ↗</button><div id="messaging-designs" class="item-list"></div></section>
-    <form id="run-form" class="card composer">
-      <div class="section-heading"><h2>A little direction goes a long way.</h2><span class="pill subtle">DEV</span></div>
-      <label for="goal">What would you like to do?</label><textarea id="goal" rows="3" placeholder="Describe your task, including package and iFlow IDs…">Deploy artifact_id HelloWorld in package_id AgentSandbox, version active.</textarea>
-      <div class="draft-row"><span class="ai-label"><span aria-hidden="true">✧</span> FREE MODEL</span><button id="draft-ai" type="button" class="quiet">Help me plan ↗</button></div><p id="ai-result" class="hint">Only your goal is sent to the AI. Every change is yours to approve.</p><details class="target-settings"><summary>Workflow & targets <span>Configure</span></summary><label for="action">Workflow</label><select id="action"><option value="deploy">Deploy existing iFlow</option><option value="create_package">Create integration package</option><option value="upload">Upload new iFlow design only</option><option value="upload_deploy">Upload ZIP & deploy new iFlow</option><option value="create_partner_parameter">Create B2B partner parameter</option></select>
-      <div class="fields"><div id="package-field"><label for="package">Package ID</label><input id="package" value="AgentSandbox" required></div><div id="artifact-field"><label for="artifact">iFlow ID</label><input id="artifact" value="HelloWorld" required></div></div>
-      <div id="partner-fields" hidden><label for="partner-id">Partner ID</label><input id="partner-id" value="RelayTestPartner"><label for="parameter-id">Parameter ID</label><input id="parameter-id" value="RelayTestParameter"><label for="parameter-value">Parameter value</label><input id="parameter-value" value="test"></div><div id="name-field" hidden><label for="package-name">Package name</label><input id="package-name" value="Agent Sandbox"></div>
-      <div id="version-field"><label for="version">Version</label><input id="version" value="active"></div>
-      <div id="upload-field" hidden><label for="bundle">Exported iFlow bundle (.zip, up to 4 MB)</label><input id="bundle" type="file" accept=".zip"><p class="hint">New artifact IDs only. Bundle structure is checked before approval.</p></div>
-      </details>
-      <button id="plan-button" type="submit" class="primary full">Review my plan <span>→</span></button>
-      <div class="trust"><svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" aria-hidden="true"><path d="M8 1l5 2v4c0 4-5 7-5 7S3 11 3 7V3z"/><path d="m5 7 2 2 4-4"/></svg> Nothing changes without your approval.</div>
-    </form>
-  </section>
-    <section id="run" hidden>
-      <div id="creation-status" class="destination" role="status"></div><button id="view-created" class="quiet" hidden>View in package →</button>
-      <div class="run-heading"><div><div class="eyebrow">CURRENT RUN</div><h2 id="run-title">Deployment plan</h2></div><span id="run-status" class="pill"></span></div>
-      <div class="card" id="plan-card"><div class="section-heading"><h2>Change plan</h2><span class="mini-label" id="run-short"></span></div><p id="plan-goal"></p><ol id="operations"></ol><p id="risk" class="risk"></p>
-        <details><summary>Inspect before / after diff</summary><div class="diff"><div class="diff-label">− BEFORE</div><pre id="before"></pre><div class="diff-label added">+ PROPOSED</div><pre id="after"></pre></div></details>
-        <details id="bundle-details" hidden><summary>Bundle fingerprint & files</summary><pre id="bundle-info"></pre></details>
-        <p id="approval-message"></p><div id="approval-actions" class="button-row" hidden><button id="approve" class="primary">Approve & execute →</button><button id="reject" class="quiet danger">Reject</button></div>
-        <label><input type="checkbox" id="background-mode"> Execute approvals in the background</label><p class="hint">The backend must remain running. Follow progress in Activity.</p>
-        <button id="resume" class="quiet" hidden>Resume interrupted run</button>
+.app{display:flex;height:100dvh;max-width:1200px;margin:0 auto;box-shadow:0 0 40px rgba(0,0,0,0.4);}
+.sidebar{width:220px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:20px 14px;display:flex;flex-direction:column;overflow-y:auto;}
+.brand{font-family:var(--font-mono);font-size:15px;margin:0 0 24px 10px;letter-spacing:-0.3px;}
+.brand b{color:var(--copper);font-weight:500;}
+.nav-item{display:block;padding:9px 12px;margin-bottom:2px;border-radius:6px;border-left:2px solid transparent;color:var(--text-dim);cursor:pointer;font-size:13px;transition:all 0.15s;}
+.nav-item:hover{background:var(--surface-2);color:var(--text);}
+.nav-item.active{background:var(--surface-2);color:var(--text);border-left-color:var(--copper);font-weight:500;}
+.nav-section{padding:14px 12px 6px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-faint);font-family:var(--font-mono);font-weight:500;margin-top:4px;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--surface);border-bottom:1px solid var(--border);gap:12px;flex-shrink:0;}
+.top-bar-title{font-size:15px;font-weight:500;letter-spacing:-0.2px;}
+.conn{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-dim);font-family:var(--font-mono);}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--text-faint);flex-shrink:0;}
+.dot.on{background:var(--teal);box-shadow:0 0 0 2px var(--teal-dim);}
+.dot.err{background:var(--red);}
+.content{flex:1;overflow-y:auto;padding:24px;scroll-behavior:smooth;}
+.view{display:none;}
+.view.active{display:block;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.btn{font-family:var(--font-sans);font-size:13px;font-weight:500;background:var(--copper);color:#1A1108;border:none;padding:9px 16px;border-radius:4px;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
+.btn:hover{filter:brightness(1.1);}
+.btn.secondary{background:transparent;border:1px solid var(--border);color:var(--text);}
+.btn.secondary:hover{border-color:var(--text-dim);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn:focus-visible,.nav-item:focus-visible{outline:2px solid var(--copper);outline-offset:2px;}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:14px;}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.card-title{font-size:14px;font-weight:500;margin:0;}
+.card-desc{font-size:12px;color:var(--text-dim);margin:4px 0 0;}
+.input,.select,.textarea{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:8px 10px;font-size:13px;outline:none;transition:border-color 0.15s;}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--copper);}
+.textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239DA0A8' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
+.label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;font-weight:500;}
+.field{margin-bottom:12px;}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.tag{font-family:var(--font-mono);font-size:11px;padding:2px 8px;border-radius:3px;border:1px solid var(--border);color:var(--text-dim);display:inline-block;}
+.tag-steel{background:var(--steel-dim);color:var(--steel);border-color:var(--steel);}
+.tag-teal{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
+.tag-amber{background:var(--amber-dim);color:var(--amber);border-color:var(--amber);}
+.tag-copper{background:var(--copper-dim);color:var(--copper);border-color:var(--copper);}
+.tag-red{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+.status{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.dot.deployed{background:var(--teal);} .dot.draft{background:var(--text-faint);}
+.dot.building{background:var(--steel);} .dot.testing{background:var(--amber);}
+.dot.failed{background:var(--red);}
+.pill{display:inline-block;padding:3px 8px;border-radius:12px;font-size:10px;font-weight:600;font-family:var(--font-mono);letter-spacing:0.3px;}
+.pill-steel{background:var(--steel-dim);color:var(--steel);}
+.pill-teal{background:var(--teal-dim);color:var(--teal);}
+.pill-amber{background:var(--amber-dim);color:var(--amber);}
+.pill-copper{background:var(--copper-dim);color:var(--copper);}
+.pill-red{background:var(--red-dim);color:var(--red);}
+.alert{padding:12px 14px;border-radius:6px;font-size:12px;line-height:1.6;margin-bottom:12px;border-left:3px solid;}
+.alert-info{background:var(--steel-dim);color:var(--steel);border-left-color:var(--steel);}
+.alert-success{background:var(--teal-dim);color:var(--teal);border-left-color:var(--teal);}
+.alert-error{background:var(--red-dim);color:var(--red);border-left-color:var(--red);}
+.alert-warning{background:var(--amber-dim);color:var(--amber);border-left-color:var(--amber);}
+
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.metric .l{font-size:12px;color:var(--text-dim);margin:0 0 6px;}
+.metric .v{font-size:25px;font-weight:500;margin:0;font-family:var(--font-mono);}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.table{width:100%;border-collapse:collapse;font-size:13px;}
+.table th{text-align:left;color:var(--text-dim);font-weight:400;font-size:12px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface-2);}
+.table td{padding:11px 16px;border-bottom:1px solid var(--border);}
+.table tr:last-child td{border-bottom:none;}
+.table tr:hover td{background:var(--surface-2);}
+
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.col-head{font-size:12.5px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;gap:7px;color:var(--text-dim);}
+.card-item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:10px;cursor:pointer;transition:all 0.15s;}
+.card-item:hover{border-color:var(--text-faint);transform:translateY(-1px);}
+.card-item.c-draft{border-left-color:var(--text-faint);}
+.card-item.c-building{border-left-color:var(--steel);}
+.card-item.c-testing{border-left-color:var(--amber);}
+.card-item.c-deployed{border-left-color:var(--teal);}
+.card-item .tag{margin-bottom:6px;}
+.card-item p{margin:4px 0 0;font-size:13px;font-weight:500;}
+
+.timeline{max-width:520px;}
+.t-item{display:flex;gap:12px;padding-bottom:16px;}
+.t-item:last-child{padding-bottom:0;}
+.t-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+.t-content{flex:1;}
+.t-title{margin:0;font-size:13px;font-weight:500;}
+.t-time{font-size:11px;color:var(--text-faint);margin:2px 0 0;font-family:var(--font-mono);}
+
+.chat-pane{width:340px;flex-shrink:0;border-right:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;}
+.bubble{padding:10px 13px;border-radius:10px;font-size:13px;max-width:92%;line-height:1.5;}
+.bubble.user{align-self:flex-end;background:var(--copper-dim);color:var(--text);}
+.bubble.agent{align-self:flex-start;background:var(--surface-2);color:var(--text);}
+.chat-input{margin-top:auto;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-size:13px;color:var(--text-dim);outline:none;}
+.canvas-pane{flex:1;padding:20px;min-width:0;overflow:auto;}
+.canvas-pane .label{font-size:12px;color:var(--text-dim);margin:0 0 14px;}
+.flow-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
+.node{display:inline-flex;align-items:center;padding:8px 14px;border-radius:6px;font-size:12px;font-family:var(--font-mono);border:1px solid;font-weight:500;}
+.node.adapter{background:var(--steel-dim);color:var(--steel);border-color:var(--steel);}
+.node.map{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);}
+.node.router{background:var(--amber-dim);color:var(--amber);border-color:var(--amber);}
+.node.trigger{background:var(--copper-dim);color:var(--copper);border-color:var(--copper);}
+.arrow{color:var(--text-faint);margin:0 4px;font-size:16px;}
+.legend{display:flex;gap:18px;margin-top:18px;font-size:12px;color:var(--text-dim);}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:8px;height:8px;border-radius:50%;display:inline-block;}
+
+.split{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;min-height:400px;}
+.builder-body{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;min-height:300px;}
+.builder-canvas{flex:1;padding:24px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:200px;}
+.props{width:220px;flex-shrink:0;border-left:1px solid var(--border);padding:16px;overflow-y:auto;}
+.props .pl{font-size:12px;color:var(--text-dim);margin:0 0 12px;font-weight:500;}
+
+.code-block{background:#0d1117;color:#a8d8a8;padding:14px;border-radius:6px;font-family:var(--font-mono);font-size:11px;line-height:1.7;overflow-x:auto;white-space:pre-wrap;word-break:break-all;max-height:300px;overflow-y:auto;border:1px solid var(--border);}
+
+.steps{display:flex;gap:24px;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:20px;font-size:13px;}
+.step{color:var(--text-faint);}
+.step.active{color:var(--copper);font-weight:500;}
+
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0 12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-size:10px;font-weight:600;color:var(--text-faint);font-family:var(--font-mono);letter-spacing:0.8px;text-transform:uppercase;}
+
+.subflow-card{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;}
+.subflow-card:hover{border-color:var(--text-faint);}
+.subflow-card.selected{border-color:var(--copper);background:var(--copper-dim);}
+.subflow-header{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.subflow-num{width:20px;height:20px;border-radius:50%;background:var(--copper-dim);color:var(--copper);display:grid;place-items:center;font-size:10px;font-weight:700;flex-shrink:0;}
+.subflow-name{font-size:13px;font-weight:600;}
+.subflow-desc{font-size:11px;color:var(--text-dim);line-height:1.5;padding-left:30px;}
+.subflow-meta{display:flex;gap:6px;padding-left:30px;margin-top:6px;flex-wrap:wrap;}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;text-align:center;}
+.empty-icon{font-size:36px;margin-bottom:14px;opacity:0.3;color:var(--text-faint);}
+.empty-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.empty-desc{font-size:12px;color:var(--text-dim);max-width:340px;line-height:1.6;}
+
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--copper);border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.form-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+.text-muted{color:var(--text-dim);}
+.text-xs{font-size:11px;}
+.mt-1{margin-top:6px;}
+.mt-2{margin-top:10px;}
+.mt-3{margin-top:14px;}
+.gap-2{gap:8px;}
+
+@media(max-width:800px){
+  .sidebar{width:60px;min-width:60px;padding:16px 8px;}
+  .brand,.nav-item span:not(.nav-icon),.nav-section{display:none;}
+  .nav-item{justify-content:center;padding:10px;}
+  .nav-item.active{border-left-color:var(--copper);border-bottom-color:transparent;}
+  .row{grid-template-columns:1fr;}
+  .content{padding:16px;}
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .board{grid-template-columns:repeat(2,1fr);}
+  .chat-pane{width:100%;border-right:none;border-bottom:1px solid var(--border);}
+  .split,.builder-body{flex-direction:column;}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="sidebar" aria-label="Main">
+    <p class="brand"><b>CPI</b> Copilot</p>
+    <div class="nav-section">Build</div>
+    <div class="nav-item active" data-view="v-agent"><span class="nav-icon">⌁</span> <span>iFlow Agent</span></div>
+    <div class="nav-item" data-view="v-b2b"><span class="nav-icon">⇄</span> <span>B2B / TPM</span></div>
+    <div class="nav-item" data-view="v-apis"><span class="nav-icon">◈</span> <span>APIs</span></div>
+    <div class="nav-item" data-view="v-messaging"><span class="nav-icon">≡</span> <span>Messaging</span></div>
+    <div class="nav-item" data-view="v-templates"><span class="nav-icon">⬡</span> <span>Templates</span></div>
+    <div class="nav-section">Workspace</div>
+    <div class="nav-item" data-view="v-inventory"><span class="nav-icon">◫</span> <span>Packages</span></div>
+    <div class="nav-item" data-view="v-activity"><span class="nav-icon">◷</span> <span>Activity</span></div>
+    <div class="nav-item" data-view="v-connections"><span class="nav-icon">◎</span> <span>Connections</span></div>
+    <div class="nav-item" data-view="v-settings"><span class="nav-icon">⚙</span> <span>Settings</span></div>
+  </nav>
+
+  <div class="main">
+    <header class="top-bar">
+      <div class="top-bar-title" id="view-title">iFlow Agent</div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="conn"><span class="dot" id="conn-dot"></span><span id="conn-text">Offline</span></div>
+        <button class="btn" id="new-task-btn">＋ New</button>
       </div>
-      <div class="card"><div class="section-heading"><h2>Execution timeline</h2><span class="live-label">● LIVE</span></div><ol id="timeline" class="timeline"></ol></div>
-      <div id="test-card" class="card" hidden><div class="section-heading"><h2>Generated smoke test</h2><button id="download-test" class="quiet">Download .py</button></div><p id="test-scope"></p><pre id="test-code"></pre></div>
-    </section>
-    <div id="empty-state" class="empty"><div class="workflow-strip"><span>Discover</span><i>→</i><span>Plan</span><i>→</i><span>Approve</span><i>→</i><span>Verify</span></div><p>A clear plan. A considered change. A complete record.</p></div>
-  <section id="tab-inventory" hidden><div class="section-heading"><h2>Packages</h2><button id="refresh-artifacts" class="quiet">Refresh ↻</button></div><div id="packages" class="item-list"></div><h2 id="selected-package-title" hidden></h2><div id="flows" class="item-list"></div><pre id="artifact-detail" hidden></pre></section>
-  <section id="tab-history" hidden><div class="section-heading"><h2>Recent runs</h2><button id="refresh-history" class="quiet">Refresh ↻</button></div><div id="history" class="item-list"></div><h2>Channel jobs</h2><button id="refresh-channel-jobs" class="quiet">Refresh jobs ↻</button><div id="channel-jobs" class="item-list"></div></section>
-  <section id="tab-capabilities" hidden><div class="section-heading"><h2>Service access</h2><button id="check-services" class="quiet">Check access ↻</button></div><p>Access checks are read-only. Partner Directory does not certify full B2B/TPM functionality.</p><button id="diagnose-sap" class="quiet">Diagnose SAP APIs ↗</button><button id="channel-status" class="quiet">Voice & WhatsApp status ↗</button><pre id="channel-detail" hidden></pre><div id="capabilities" class="item-list"></div><pre id="service-inventory" hidden></pre></section>
-  </div></div><footer><span><span class="footer-dot"></span> BUILT FOR YOUR WORKFLOW</span><a href="guide.html" target="_blank" rel="noopener">Extension guide ↗</a></footer>
-</main><script src="vendor/bpmn-viewer.js"></script><script src="panel.js" type="module"></script>
-</body></html>
+    </header>
+
+    <div class="content" id="content">
+
+      <!-- ===== AGENT VIEW ===== -->
+      <section id="v-agent" class="view active">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">iFlow Agent</h1><p class="card-desc" style="margin:5px 0 0;">Describe your integration. The agent builds it step by step.</p></div>
+        </div>
+
+        <div class="card" id="mode-card">
+          <div style="display:flex;gap:12px;margin-bottom:14px;">
+            <button class="nav-item active" id="mode-auto" style="flex:1;text-align:center;margin:0;">✦ Smart Agent</button>
+            <button class="nav-item" id="mode-guided" style="flex:1;text-align:center;margin:0;">☰ Guided</button>
+          </div>
+          <p class="card-desc" id="mode-desc">Full autonomous: propose → decompose → compile → review.</p>
+        </div>
+
+        <div id="wizard">
+          <div class="wizard-panel visible" data-step="1" id="step-1">
+            <div class="card">
+              <div class="steps">
+                <span class="step active">1&nbsp; Describe</span>
+                <span class="step">2&nbsp; Plan</span>
+                <span class="step">3&nbsp; Build</span>
+                <span class="step">4&nbsp; Review</span>
+              </div>
+              <div class="field">
+                <label class="label" for="agent-pkg">Target package</label>
+                <select class="select" id="agent-pkg"><option value="">Connect to load packages</option></select>
+              </div>
+              <div class="field">
+                <label class="label" for="agent-scenario">Describe your integration</label>
+                <textarea class="textarea" id="agent-scenario" rows="5" placeholder="Example: Receive HTTPS JSON with an orders array. Validate order_id and amount, calculate tax at 8%, route orders over $5000 for manual review, then return processed orders."></textarea>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn secondary" data-example="invoice" style="font-size:11px;padding:6px 12px;">Invoice</button>
+                <button class="btn secondary" data-example="inventory" style="font-size:11px;padding:6px 12px;">Inventory</button>
+                <button class="btn secondary" data-example="order" style="font-size:11px;padding:6px 12px;">Order sync</button>
+                <button class="btn secondary" data-example="b2b" style="font-size:11px;padding:6px 12px;">B2B partner</button>
+              </div>
+              <details style="margin-top:14px;">
+                <summary style="font-size:11px;color:var(--text-dim);cursor:pointer;">Advanced options</summary>
+                <div class="row mt-1">
+                  <div class="field"><label class="label" for="agent-version">Version</label><input class="input" id="agent-version" value="active"></div>
+                  <div class="field"><label class="label" for="agent-pattern">Pattern</label><select class="select" id="agent-pattern"><option value="auto">Auto detect</option><option value="request-reply">Request-Reply</option><option value="store">Store & Forward</option><option value="batch">Batch</option></select></div>
+                </div>
+              </details>
+              <div class="form-actions"><button class="btn" id="analyze-btn" style="flex:1;">Analyze scenario →</button></div>
+            </div>
+          </div>
+
+          <div class="wizard-panel" data-step="2" id="step-2">
+            <div class="card">
+              <div class="steps">
+                <span class="step active">1&nbsp; Describe</span>
+                <span class="step active">2&nbsp; Plan</span>
+                <span class="step">3&nbsp; Build</span>
+                <span class="step">4&nbsp; Review</span>
+              </div>
+              <div id="plan-loading" class="empty-state" hidden>
+                <span class="spinner" style="width:28px;height:28px;border-width:3px;"></span>
+                <div class="empty-title mt-1">Agent is planning…</div>
+                <div class="empty-desc">Analyzing requirements and proposing architecture.</div>
+              </div>
+              <div id="plan-result">
+                <div class="card-head">
+                  <div><p class="card-title" id="plan-title">Integration Plan</p><p class="card-desc" id="plan-summary">Review the proposed architecture.</p></div>
+                  <span class="pill pill-copper" id="plan-status">Pending</span>
+                </div>
+                <div id="plan-reqs" hidden><div class="divider"><span>Requirements</span></div><ul id="plan-reqs-list" style="padding-left:18px;font-size:12px;color:var(--text-dim);line-height:2;"></ul></div>
+                <div id="plan-arch" hidden><div class="divider"><span>Architecture</span></div><div id="plan-subflows"></div></div>
+                <div id="plan-blockers" hidden><div class="divider"><span>Blockers</span></div><ul id="plan-blockers-list" style="padding-left:18px;font-size:12px;color:var(--red);line-height:2;"></ul></div>
+                <div id="plan-questions" hidden><div class="divider"><span>Clarifications</span></div><div id="plan-questions-list"></div></div>
+                <div id="plan-assumptions" hidden><details style="margin-top:8px;"><summary style="font-size:11px;color:var(--text-dim);cursor:pointer;">Assumptions</summary><ul id="plan-assumptions-list" style="padding-left:18px;font-size:11px;color:var(--text-faint);line-height:1.8;margin-top:6px;"></ul></details></div>
+                <div class="form-actions" style="margin-top:16px;">
+                  <button class="btn secondary" id="plan-back">← Back</button>
+                  <button class="btn" id="plan-build" style="flex:1;">Build iFlow →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-panel" data-step="3" id="step-3">
+            <div class="card">
+              <div class="steps">
+                <span class="step active">1&nbsp; Describe</span>
+                <span class="step active">2&nbsp; Plan</span>
+                <span class="step active">3&nbsp; Build</span>
+                <span class="step">4&nbsp; Review</span>
+              </div>
+              <div id="build-loading" class="empty-state">
+                <span class="spinner" style="width:28px;height:28px;border-width:3px;"></span>
+                <div class="empty-title mt-1" id="build-title">Compiling iFlow…</div>
+                <div class="empty-desc" id="build-desc">Generating BPMN, scripts, and artifacts.</div>
+              </div>
+              <div id="build-result" hidden>
+                <div id="build-subflows"></div>
+                <div class="form-actions" style="margin-top:14px;">
+                  <button class="btn secondary" id="build-back">← Plan</button>
+                  <button class="btn secondary" id="build-download">Download ↓</button>
+                  <button class="btn" id="build-review" style="flex:1;">Review →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wizard-panel" data-step="4" id="step-4">
+            <div class="card">
+              <div class="steps">
+                <span class="step active">1&nbsp; Describe</span>
+                <span class="step active">2&nbsp; Plan</span>
+                <span class="step active">3&nbsp; Build</span>
+                <span class="step active">4&nbsp; Review</span>
+              </div>
+              <div class="card-head">
+                <div><p class="card-title">Deployment Review</p><p class="card-desc">Inspect before deploying to SAP CPI.</p></div>
+                <span class="pill pill-teal" id="review-status">Ready</span>
+              </div>
+              <div id="review-diagram-section"><div class="divider"><span>Flow</span></div><div class="flow-row" id="review-diagram"></div></div>
+              <div id="review-samples" hidden><div class="divider"><span>Sample I/O</span></div><div class="row"><pre class="code-block" id="review-input" style="max-height:160px;font-size:10px;"></pre><pre class="code-block" id="review-output" style="max-height:160px;font-size:10px;"></pre></div></div>
+              <div id="review-config" hidden><div class="divider"><span>Config</span></div><pre class="code-block" id="review-config-content" style="font-size:10px;max-height:180px;"></pre></div>
+              <div id="review-bundle" hidden><div class="divider"><span>Bundle</span></div><pre class="code-block" id="review-bundle-content" style="font-size:10px;max-height:180px;"></pre></div>
+              <div class="alert alert-warning mt-2" id="review-warning" hidden><span style="margin-right:8px;">⚠</span><span id="review-warning-text"></span></div>
+              <div class="form-actions" style="margin-top:14px;">
+                <button class="btn secondary" id="review-back">← Back</button>
+                <button class="btn secondary" id="review-download">Download ↓</button>
+                <button class="btn" id="review-deploy" style="background:var(--teal);color:#0a1a14;">Approve & Deploy →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="deploy-output" class="card" hidden>
+          <div class="card-head">
+            <div><p class="card-title">Deployment Result</p><p class="card-desc" id="deploy-desc"></p></div>
+            <span class="pill" id="deploy-status">—</span>
+          </div>
+          <div class="timeline" id="deploy-timeline"></div>
+        </div>
+      </section>
+
+      <!-- ===== B2B VIEW ===== -->
+      <section id="v-b2b" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">B2B / TPM</h1><p class="card-desc" style="margin:5px 0 0;">Partner parameters, agreements, and adapter mappings.</p></div>
+        </div>
+        <div class="card">
+          <div class="field"><label class="label" for="b2b-pkg">Package</label><select class="select" id="b2b-pkg"><option value="">Connect to load packages</option></select></div>
+          <div class="row">
+            <div class="field"><label class="label" for="b2b-partner">Partner ID</label><input class="input" id="b2b-partner" placeholder="e.g., WALMART_US"></div>
+            <div class="field"><label class="label" for="b2b-standard">EDI Standard</label><select class="select" id="b2b-standard"><option value="EDIFACT">EDIFACT</option><option value="X12">X12 / ANSI</option><option value="IDOC">IDoc</option><option value="XML">Custom XML</option><option value="JSON">JSON</option></select></div>
+          </div>
+          <div class="row">
+            <div class="field"><label class="label" for="b2b-agreement">Agreement Profile</label><input class="input" id="b2b-agreement" placeholder="e.g., ORDERS_D96A"></div>
+            <div class="field"><label class="label" for="b2b-receiver">Receiver Port</label><input class="input" id="b2b-receiver" placeholder="RECEIVER_PORT_01"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" id="b2b-propose" style="flex:1;">Propose B2B Design →</button>
+            <button class="btn secondary" id="b2b-compile">Compile</button>
+          </div>
+        </div>
+        <div id="b2b-result" hidden>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title" id="b2b-result-title">B2B Design</p><p class="card-desc" id="b2b-result-desc"></p></div></div>
+            <pre class="code-block" id="b2b-result-content" style="max-height:400px;"></pre>
+            <div class="form-actions"><button class="btn secondary" id="b2b-download">Download ↓</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== APIs VIEW ===== -->
+      <section id="v-apis" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">APIs</h1><p class="card-desc" style="margin:5px 0 0;">Build and deploy OData / REST APIs from iFlows.</p></div>
+        </div>
+        <div class="card">
+          <div class="field"><label class="label" for="api-pkg">Package</label><select class="select" id="api-pkg"><option value="">Connect to load packages</option></select></div>
+          <div class="row">
+            <div class="field"><label class="label" for="api-name">API Name</label><input class="input" id="api-name" placeholder="Partner Catalog API"></div>
+            <div class="field"><label class="label" for="api-path">Base Path</label><input class="input" id="api-path" placeholder="/api/v1/partners"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label class="label" for="api-method">Default Method</label><select class="select" id="api-method"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option></select></div>
+            <div class="field"><label class="label" for="api-format">Format</label><select class="select" id="api-format"><option>JSON</option><option>XML</option></select></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" id="api-build" style="flex:1;">Build API Provider →</button>
+          </div>
+        </div>
+        <div id="api-result" hidden>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title">Generated API Design</p><p class="card-desc" id="api-result-desc"></p></div></div>
+            <pre class="code-block" id="api-result-content" style="max-height:400px;"></pre>
+            <div class="form-actions"><button class="btn secondary" id="api-download">Download ↓</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== MESSAGING VIEW ===== -->
+      <section id="v-messaging" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Messaging</h1><p class="card-desc" style="margin:5px 0 0;">JMS retry, Solace event mesh, and messaging templates.</p></div>
+        </div>
+        <div class="card">
+          <div style="display:flex;gap:10px;margin-bottom:14px;">
+            <button class="nav-item active" id="msg-jms" style="flex:1;text-align:center;margin:0;">↻ JMS Retry</button>
+            <button class="nav-item" id="msg-solace" style="flex:1;text-align:center;margin:0;">◫ Solace Mesh</button>
+          </div>
+          <div class="field"><label class="label" for="msg-pkg">Package</label><select class="select" id="msg-pkg"><option value="">Connect to load packages</option></select></div>
+          <div class="row">
+            <div class="field"><label class="label" for="msg-jms-url">JMS Broker URL</label><input class="input" id="msg-jms-url" placeholder="amqp://host:5672"></div>
+            <div class="field"><label class="label" for="msg-queue">Queue Name</label><input class="input" id="msg-queue" placeholder="retry.queue"></div>
+          </div>
+          <div class="form-actions"><button class="btn" id="msg-build" style="flex:1;">Build Messaging Pattern →</button></div>
+        </div>
+        <div id="msg-result" hidden>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title">Generated Pattern</p><p class="card-desc" id="msg-result-desc"></p></div></div>
+            <pre class="code-block" id="msg-result-content" style="max-height:400px;"></pre>
+            <div class="form-actions"><button class="btn secondary" id="msg-download">Download ↓</button></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TEMPLATES VIEW ===== -->
+      <section id="v-templates" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Templates</h1><p class="card-desc" style="margin:5px 0 0;">Curated SAP integration patterns.</p></div>
+          <button class="btn secondary" id="refresh-tpl">Refresh ↻</button>
+        </div>
+        <div class="card">
+          <div id="tpl-list"><div class="empty-state"><div class="empty-icon">⬡</div><div class="empty-title">No templates loaded</div><div class="empty-desc">Connect to load templates.</div></div></div>
+        </div>
+        <div id="tpl-detail" hidden>
+          <div class="card">
+            <div class="card-head"><div><p class="card-title" id="tpl-title">Template</p><p class="card-desc" id="tpl-desc"></p></div></div>
+            <div id="tpl-form"></div>
+            <div class="form-actions">
+              <button class="btn secondary" id="tpl-back">← Back</button>
+              <button class="btn" id="tpl-build" style="flex:1;">Build from Template →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== INVENTORY VIEW ===== -->
+      <section id="v-inventory" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Packages & iFlows</h1><p class="card-desc" style="margin:5px 0 0;">Browse and manage your integration artifacts.</p></div>
+          <button class="btn secondary" id="refresh-pkgs">Refresh ↻</button>
+        </div>
+        <div class="card">
+          <div id="pkgs-list"><div class="empty-state"><div class="empty-icon">◫</div><div class="empty-title">No packages</div><div class="empty-desc">Connect to load packages.</div></div></div>
+        </div>
+      </section>
+
+      <!-- ===== ACTIVITY VIEW ===== -->
+      <section id="v-activity" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Activity</h1><p class="card-desc" style="margin:5px 0 0;">Recent runs and agent actions.</p></div>
+          <button class="btn secondary" id="refresh-runs">Refresh ↻</button>
+        </div>
+        <div class="card">
+          <div id="runs-list"><div class="empty-state"><div class="empty-icon">◷</div><div class="empty-title">No activity</div><div class="empty-desc">Run history will appear here.</div></div></div>
+        </div>
+      </section>
+
+      <!-- ===== CONNECTIONS VIEW ===== -->
+      <section id="v-connections" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Connections</h1><p class="card-desc" style="margin:5px 0 0;">SAP CPI API access and messaging infrastructure.</p></div>
+        </div>
+        <div class="card">
+          <div class="form-actions">
+            <button class="btn" id="check-conn">Check Access ↻</button>
+            <button class="btn secondary" id="diagnose">Diagnose APIs</button>
+          </div>
+          <pre class="code-block" id="conn-output" style="display:none;margin-top:14px;max-height:400px;"></pre>
+        </div>
+      </section>
+
+      <!-- ===== SETTINGS VIEW ===== -->
+      <section id="v-settings" class="view">
+        <div class="view-head">
+          <div><h1 style="font-size:19px;font-weight:500;margin:0;">Settings</h1><p class="card-desc" style="margin:5px 0 0;">Connect the Copilot to your SAP CPI tenant.</p></div>
+        </div>
+        <div class="card">
+          <div class="field"><label class="label" for="set-backend">Backend URL</label><input class="input" id="set-backend" value="http://127.0.0.1:8000"></div>
+          <div class="field"><label class="label" for="set-token">Access Token</label><input class="input" id="set-token" type="password" placeholder="Paste your token"></div>
+          <div class="form-actions">
+            <button class="btn" id="connect-btn" style="flex:1;">Connect →</button>
+            <button class="btn secondary" id="disconnect-btn">Disconnect</button>
+          </div>
+          <p class="text-muted text-xs mt-2">Token stored in session only. SAP credentials stay on the server.</p>
+          <div id="conn-notice" style="margin-top:10px;"></div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const S = {
+  token: sessionStorage.getItem('cpi_token') || '',
+  backend: localStorage.getItem('cpi_backend') || 'http://127.0.0.1:8000',
+  principal: null, connected: false, view: 'agent',
+  packages: [], agentMode: 'auto', msgPattern: 'jms-retry',
+  wizard: { step: 1, planId: null, plan: null, compile: null },
+  b2b: { compile: null },
+};
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const show = el => { if (el) el.hidden = false; };
+const hide = el => { if (el) el.hidden = true; };
+
+async function api(path, opts = {}) {
+  const url = `${S.backend}${path}`;
+  const headers = { 'Content-Type': 'application/json' };
+  if (S.token) headers['Authorization'] = `Bearer ${S.token}`;
+  const res = await fetch(url, { ...opts, headers: { ...headers, ...(opts.headers || {}) } });
+  if (res.status === 401) { disconnect(); throw new Error('Unauthorized'); }
+  if (!res.ok) { const t = await res.text().catch(() => res.statusText); throw new Error(`${res.status}: ${t}`); }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function notice(msg, type = 'info') {
+  const el = $('#conn-notice');
+  if (!el) return;
+  el.innerHTML = `<div class="alert alert-${type}">${esc(msg)}</div>`;
+}
+
+function updateConn() {
+  const dot = $('#conn-dot'), text = $('#conn-text');
+  if (S.connected) { dot.className = 'dot on'; text.textContent = S.principal?.tenant_name || 'Connected'; }
+  else { dot.className = 'dot'; text.textContent = 'Offline'; }
+}
+
+function setStatus(el, status, text) {
+  el.className = `pill pill-${status}`;
+  el.textContent = text || status;
+}
+
+async function connect() {
+  const backend = $('#set-backend').value.trim() || S.backend;
+  const token = $('#set-token').value.trim();
+  if (!token) { notice('Enter an access token.', 'error'); return; }
+  S.backend = backend; S.token = token;
+  localStorage.setItem('cpi_backend', backend);
+  sessionStorage.setItem('cpi_token', token);
+  $('#connect-btn').disabled = true;
+  $('#connect-btn').textContent = 'Connecting…';
+  try {
+    const me = await api('/v1/me');
+    S.principal = me; S.connected = true;
+    notice(`Connected to ${me.tenant_name} (${me.environment})`, 'success');
+    updateConn();
+    await loadAll();
+  } catch (e) {
+    S.connected = false;
+    notice(`Connection failed: ${e.message}`, 'error');
+  } finally {
+    $('#connect-btn').disabled = false;
+    $('#connect-btn').textContent = 'Connect →';
+  }
+}
+
+function disconnect() {
+  S.token = ''; S.principal = null; S.connected = false; S.packages = [];
+  sessionStorage.removeItem('cpi_token');
+  updateConn();
+}
+
+async function loadAll() {
+  if (!S.connected) return;
+  await loadPackages();
+  loadTemplates();
+}
+
+// ---- Navigation ----
+function navigate(view) {
+  S.view = view;
+  $$('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+  $$('.view').forEach(v => v.classList.remove('active'));
+  const section = $(`#${view}`);
+  if (section) { section.classList.add('active'); section.scrollTop = 0; }
+  const titles = { 'v-agent': 'iFlow Agent', 'v-b2b': 'B2B / TPM', 'v-apis': 'APIs', 'v-messaging': 'Messaging', 'v-templates': 'Templates', 'v-inventory': 'Packages', 'v-activity': 'Activity', 'v-connections': 'Connections', 'v-settings': 'Settings' };
+  $('#view-title').textContent = titles[view] || view;
+}
+
+// ---- Wizard ----
+function showStep(n) {
+  S.wizard.step = n;
+  $$('.wizard-panel').forEach(p => p.classList.toggle('visible', +p.dataset.step === n));
+  const steps = $$('#wizard .steps');
+  steps.forEach(bar => {
+    const items = bar.querySelectorAll('.step');
+    items.forEach((s, i) => s.classList.toggle('active', i < n));
+  });
+}
+
+// ---- Analyze ----
+async function analyze() {
+  const scenario = $('#agent-scenario').value.trim();
+  if (!scenario) { notice('Describe your integration.', 'error'); return; }
+  const pkg = $('#agent-pkg').value || undefined;
+  const pattern = $('#agent-pattern').value;
+  navigate('v-agent');
+  showStep(2);
+  $('#plan-loading').hidden = false;
+  hide($('#plan-result'));
+  try {
+    const result = await api('/v1/designs/propose', { method: 'POST', body: JSON.stringify({ description: scenario, pattern, package_id: pkg }) });
+    S.wizard.plan = result;
+    S.wizard.planId = result.id || result.plan_id;
+    renderPlan(result);
+  } catch (e) {
+    $('#plan-loading').hidden = true;
+    show($('#plan-result'));
+    notice(`Analysis failed: ${e.message}`, 'error');
+  }
+}
+
+function renderPlan(result) {
+  $('#plan-loading').hidden = true;
+  show($('#plan-result'));
+  $('#plan-title').textContent = result.title || 'Integration Plan';
+  $('#plan-summary').textContent = result.summary || '';
+
+  if (result.requirements?.length) {
+    show($('#plan-reqs'));
+    $('#plan-reqs-list').innerHTML = result.requirements.map(r => `<li>${esc(r)}</li>`).join('');
+  } else hide($('#plan-reqs'));
+
+  if (result.sub_flows?.length || result.architecture?.length) {
+    show($('#plan-arch'));
+    const flows = result.sub_flows || result.architecture || [];
+    $('#plan-subflows').innerHTML = flows.map((f, i) => `
+      <div class="subflow-card"><div class="subflow-header"><span class="subflow-num">${i+1}</span><span class="subflow-name">${esc(f.name || f.id || `Flow ${i+1}`)}</span><span class="tag ${f.type==='trigger'?'tag-copper':f.type==='process'?'tag-steel':'tag-steel'}">${esc(f.type||'process')}</span></div>
+      <div class="subflow-desc">${esc(f.description||f.summary||'')}</div>
+      ${f.inputs?.length?`<div class="subflow-meta"><span class="tag tag-steel">In: ${f.inputs.length}</span></div>`:''}${f.outputs?.length?`<div class="subflow-meta"><span class="tag tag-teal">Out: ${f.outputs.length}</span></div>`:''}</div>`).join('');
+  } else hide($('#plan-arch'));
+
+  if (result.blockers?.length) { show($('#plan-blockers')); $('#plan-blockers-list').innerHTML = result.blockers.map(b=>`<li>${esc(b)}</li>`).join(''); }
+  else hide($('#plan-blockers'));
+
+  if (result.questions?.length) { show($('#plan-questions')); $('#plan-questions-list').innerHTML = result.questions.map(q=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;">${esc(q)}</div>`).join(''); }
+  else hide($('#plan-questions'));
+
+  if (result.assumptions?.length) { show($('#plan-assumptions')); $('#plan-assumptions-list').innerHTML = result.assumptions.map(a=>`<li>${esc(a)}</li>`).join(''); }
+  else hide($('#plan-assumptions'));
+
+  const st = $('#plan-status');
+  if (result.blockers?.length) { setStatus(st, 'red', 'Blocked'); }
+  else if (result.questions?.length) { setStatus(st, 'amber', 'Needs info'); }
+  else { setStatus(st, 'teal', 'Ready'); }
+}
+
+// ---- Build ----
+async function buildFromPlan() {
+  if (!S.wizard.plan) { notice('No plan available.', 'error'); return; }
+  navigate('v-agent');
+  showStep(3);
+  $('#build-loading').hidden = false;
+  hide($('#build-result'));
+  try {
+    let result;
+    const planId = S.wizard.planId || S.wizard.plan.id || S.wizard.plan.plan_id;
+    try {
+      result = await api('/v1/designs/compile', { method: 'POST', body: JSON.stringify({ plan_id: planId, description: $('#agent-scenario').value, package_id: $('#agent-pkg').value || undefined }) });
+    } catch {
+      result = await api('/v1/scenarios/compile', { method: 'POST', body: JSON.stringify({ description: $('#agent-scenario').value, pattern: $('#agent-pattern').value, package_id: $('#agent-pkg').value || undefined }) });
+    }
+    S.wizard.compile = result;
+    renderBuild(result);
+  } catch (e) {
+    $('#build-loading').hidden = true;
+    show($('#build-result'));
+    $('#build-title').textContent = 'Build issue';
+    $('#build-desc').textContent = e.message;
+    notice(`Build failed: ${e.message}`, 'error');
+  }
+}
+
+function renderBuild(result) {
+  $('#build-loading').hidden = true;
+  show($('#build-result'));
+  $('#build-title').textContent = 'Build Complete';
+  $('#build-desc').textContent = 'iFlow compiled. Review before deploying.';
+  const flows = result.sub_flows || result.flows || result.bpmn || [];
+  const el = $('#build-subflows');
+  if (flows.length) {
+    el.innerHTML = flows.map((f, i) => `
+      <div class="subflow-card"><div class="subflow-header"><span class="subflow-num">${i+1}</span><span class="subflow-name">${esc(f.name||f.id||`Sub-flow ${i+1}`)}</span><span class="tag tag-teal">COMPILED</span></div>
+      <div style="background:var(--surface-2);border-radius:4px;padding:10px;font-size:11px;font-family:var(--font-mono);max-height:150px;overflow-y:auto;white-space:pre-wrap;color:var(--text-dim);margin-left:30px;">${esc(JSON.stringify(f,null,2))}</div></div>`).join('');
+  } else {
+    el.innerHTML = `<pre class="code-block">${esc(JSON.stringify(result,null,2))}</pre>`;
+  }
+}
+
+// ---- Review ----
+function showReview() {
+  navigate('v-agent');
+  showStep(4);
+  const result = S.wizard.compile;
+  if (!result) return;
+  const flows = result.sub_flows || result.flows || result.bpmn || [];
+  const diagram = $('#review-diagram');
+  if (flows.length) {
+    diagram.innerHTML = flows.map((f, i) => {
+      const type = i===0?'trigger':i===flows.length-1?'output':'process';
+      const icon = type==='trigger'?'▶':type==='output'?'■':'◇';
+      const parts = [];
+      if (i>0) parts.push(`<span class="arrow">→</span>`);
+      parts.push(`<span class="node ${type}">${icon} ${esc(f.name||f.id||'')}</span>`);
+      return parts.join('');
+    }).join('');
+  } else { diagram.innerHTML = '<span class="text-muted text-xs">No diagram available.</span>'; }
+  show($('#review-diagram-section'));
+
+  if (result.config||result.configuration) { show($('#review-config')); $('#review-config-content').textContent = JSON.stringify(result.config||result.configuration,null,2); }
+  if (result.bundle||result.zip||result.files) { show($('#review-bundle')); $('#review-bundle-content').textContent = JSON.stringify(result.bundle||result.zip||result.files,null,2); }
+  if (result.sample_input||result.samples?.input) { show($('#review-samples')); $('#review-input').textContent = JSON.stringify(result.sample_input||result.samples.input,null,2); $('#review-output').textContent = JSON.stringify(result.sample_output||result.samples.output,null,2); }
+}
+
+// ---- Deploy ----
+async function deploy() {
+  const result = S.wizard.compile;
+  if (!result) return;
+  const modal = $('#deploy-output');
+  show(modal);
+  modal.scrollIntoView({ behavior: 'smooth' });
+  const statusEl = $('#deploy-status'), descEl = $('#deploy-desc'), tl = $('#deploy-timeline');
+  setStatus(statusEl, 'steel', 'Deploying…');
+  descEl.textContent = 'Uploading iFlow to SAP CPI.';
+  tl.innerHTML = `<div class="t-item"><span class="t-dot" style="background:var(--steel);"></span><div class="t-content"><p class="t-title">Uploading iFlow</p><p class="t-time">Just now</p></div></div>`;
+  try {
+    const deployResult = await api('/v1/runs', { method: 'POST', body: JSON.stringify({ action: 'upload_deploy', goal: `Deploy ${result.id||result.artifact_id||'GeneratedFlow'}`, package_id: $('#agent-pkg').value, artifact_id: result.id||result.artifact_id||'GeneratedFlow', version: $('#agent-version').value||'active' }) });
+    const runId = deployResult.run_id||deployResult.id;
+    if (runId) {
+      const run = await pollRun(runId);
+      setStatus(statusEl, 'teal', 'Deployed');
+      descEl.textContent = `Run ${runId} completed.`;
+      tl.innerHTML += `<div class="t-item"><span class="t-dot" style="background:var(--teal);"></span><div class="t-content"><p class="t-title">Deployment complete</p><p class="t-time">${run.status||'Success'}</p></div></div>`;
+      notice(`iFlow deployed. Run: ${runId}`, 'success');
+    } else {
+      setStatus(statusEl, 'teal', 'Queued');
+      descEl.textContent = 'Deployment request accepted.';
+    }
+  } catch (e) {
+    setStatus(statusEl, 'red', 'Failed');
+    descEl.textContent = e.message;
+    tl.innerHTML += `<div class="t-item"><span class="t-dot" style="background:var(--red);"></span><div class="t-content"><p class="t-title">Deployment failed</p><p class="t-time">${esc(e.message)}</p></div></div>`;
+    notice(`Deployment failed: ${e.message}`, 'error');
+  }
+}
+
+async function pollRun(id, max=20) {
+  for (let i=0;i<max;i++) {
+    try { const r=await api(`/v1/runs/${id}`); if(r.status&&['completed','deployed','success','failed','error'].includes(r.status)) return r; } catch {}
+    await sleep(2000);
+  }
+  return {id,status:'unknown'};
+}
+
+// ---- B2B ----
+async function proposeB2B() {
+  const body = { package_id: $('#b2b-pkg').value||undefined, partner_id: $('#b2b-partner').value.trim(), standard: $('#b2b-standard').value, agreement_profile: $('#b2b-agreement').value.trim(), receiver_port: $('#b2b-receiver').value.trim() };
+  if (!body.partner_id) { notice('Enter a Partner ID.', 'error'); return; }
+  try {
+    const result = await api('/v1/b2b/propose', { method: 'POST', body: JSON.stringify(body) });
+    S.b2b.compile = result;
+    show($('#b2b-result'));
+    $('#b2b-result-title').textContent = `B2B: ${body.partner_id}`;
+    $('#b2b-result-desc').textContent = `${body.standard} · ${body.agreement_profile||'default'}`;
+    $('#b2b-result-content').textContent = JSON.stringify(result, null, 2);
+  } catch (e) { notice(`B2B propose failed: ${e.message}`, 'error'); }
+}
+
+async function compileB2B() {
+  if (!S.b2b.compile) { notice('Propose a design first.', 'error'); return; }
+  try {
+    const result = await api('/v1/b2b/compile', { method: 'POST', body: JSON.stringify(S.b2b.compile) });
+    $('#b2b-result-content').textContent = JSON.stringify(result, null, 2);
+    notice('B2B design compiled.', 'success');
+  } catch (e) { notice(`B2B compile failed: ${e.message}`, 'error'); }
+}
+
+// ---- APIs ----
+async function buildAPI() {
+  const body = { package_id: $('#api-pkg').value||undefined, name: $('#api-name').value.trim(), base_path: $('#api-path').value.trim(), method: $('#api-method').value, format: $('#api-format').value };
+  if (!body.name) { notice('Enter an API name.', 'error'); return; }
+  try {
+    const result = await api('/v1/designs/api/compile', { method: 'POST', body: JSON.stringify(body) });
+    show($('#api-result'));
+    $('#api-result-desc').textContent = `${body.name} · ${body.method} ${body.base_path}`;
+    $('#api-result-content').textContent = JSON.stringify(result, null, 2);
+  } catch (e) { notice(`API build failed: ${e.message}`, 'error'); }
+}
+
+// ---- Messaging ----
+async function buildMsg() {
+  const pattern = S.msgPattern;
+  const body = { pattern, package_id: $('#msg-pkg').value||undefined, jms_url: $('#msg-jms-url').value.trim(), queue: $('#msg-queue').value.trim() };
+  if (!body.jms_url && !body.queue) body.description = pattern==='jms-retry' ? 'Build JMS retry pattern with exponential backoff, dead letter queue, and monitoring.' : 'Build Solace event mesh with guaranteed delivery, topic hierarchy, and replay logging.';
+  try {
+    const result = await api('/v1/designs/messaging/compile', { method: 'POST', body: JSON.stringify(body) });
+    show($('#msg-result'));
+    $('#msg-result-desc').textContent = `${pattern==='jms-retry'?'JMS Retry':'Solace'} pattern compiled`;
+    $('#msg-result-content').textContent = JSON.stringify(result, null, 2);
+  } catch (e) { notice(`Messaging build failed: ${e.message}`, 'error'); }
+}
+
+// ---- Templates ----
+async function loadTemplates() {
+  try {
+    const data = await api('/v1/templates');
+    const templates = data.templates || [];
+    const el = $('#tpl-list');
+    if (!templates.length) { el.innerHTML = '<div class="empty-state"><div class="empty-desc">No templates available.</div></div>'; return; }
+    el.innerHTML = `<div class="board">${templates.map(t => `<div><div class="col-head"><span class="dot deployed"></span>${esc(t.category||'Template')}</div><div class="card-item c-deployed" data-tpl="${esc(t.id)}"><span class="tag tag-copper">${esc(t.complexity||'')}</span><p>${esc(t.name||t.id)}</p><p class="card-desc" style="font-size:11px;margin:4px 0 0;">${esc(t.description||'')}</p></div></div>`).join('')}</div>`;
+    $$('[data-tpl]', el).forEach(card => card.addEventListener('click', () => selectTemplate(card.dataset.tpl)));
+  } catch (e) { $('#tpl-list').innerHTML = `<div class="alert alert-error">${esc(e.message)}</div>`; }
+}
+
+async function selectTemplate(id) {
+  try {
+    const tpl = await api(`/v1/templates/${encodeURIComponent(id)}`);
+    $('#tpl-title').textContent = tpl.name || id;
+    $('#tpl-desc').textContent = tpl.description || '';
+    $('#tpl-form').innerHTML = (tpl.parameters||[]).map(p => `<div class="field"><label class="label" for="tp-${esc(p.name)}">${esc(p.label||p.name)}</label><input class="input tpl-p" data-p="${esc(p.name)}" value="${esc(p.default||'')}" placeholder="${esc(p.hint||'')}"></div>`).join('');
+    hide($('#tpl-list')); show($('#tpl-detail'));
+  } catch (e) { notice(e.message, 'error'); }
+}
+
+// ---- Packages ----
+async function loadPackages() {
+  try {
+    S.packages = await api('/v1/packages');
+    const selects = ['#agent-pkg','#b2b-pkg','#api-pkg','#msg-pkg'];
+    selects.forEach(sel => {
+      const el = $(sel); if (!el) return;
+      el.innerHTML = '<option value="">Select package</option>' + S.packages.map(p => `<option value="${esc(p.Id)}">${esc(p.Id)} — ${esc(p.Name)}</option>`).join('');
+    });
+    renderPackages();
+  } catch (e) { console.error('loadPackages', e); }
+}
+
+function renderPackages() {
+  const el = $('#pkgs-list');
+  if (!S.packages.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">◫</div><div class="empty-title">No packages</div><div class="empty-desc">Connect to load packages.</div></div>'; return; }
+  el.innerHTML = `<div class="board">${S.packages.map(p => `<div><div class="card-item c-deployed"><span class="tag tag-steel">Package</span><p>${esc(p.Id)}</p><p class="card-desc" style="font-size:11px;margin:4px 0 0;">${esc(p.Name||'')}</p></div></div>`).join('')}</div>`;
+}
+
+// ---- Runs ----
+async function loadRuns() {
+  try {
+    const runs = await api('/v1/runs');
+    const el = $('#runs-list');
+    if (!runs?.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon">◷</div><div class="empty-title">No activity</div></div>'; return; }
+    el.innerHTML = `<div class="timeline">${runs.map(r => `<div class="t-item"><span class="t-dot" style="background:var(--steel);"></span><div class="t-content"><p class="t-title">${esc(r.id)}</p><p class="t-time">${new Date(r.created).toLocaleString()}</p></div></div>`).join('')}</div>`;
+  } catch (e) { console.error(e); }
+}
+
+// ---- Connections ----
+async function loadConn() {
+  try {
+    const caps = await api('/v1/capabilities');
+    const diag = await api('/v1/diagnostics');
+    const el = $('#conn-output');
+    el.textContent = JSON.stringify({ capabilities: caps, diagnostics: diag }, null, 2);
+    el.style.display = 'block';
+  } catch (e) { $('#conn-output').textContent = `Error: ${e.message}`; $('#conn-output').style.display = 'block'; }
+}
+
+// ---- Downloads ----
+function downloadJson(name, data) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click(); URL.revokeObjectURL(a.href);
+}
+
+// ---- Examples ----
+const EXAMPLES = {
+  invoice: 'Receive HTTPS JSON with an invoices array. Validate invoice_id and amount, calculate tax at 8%, enrich with customer data, route disputed invoices for manual review, then return processed invoices.',
+  inventory: 'Receive inventory updates via HTTPS POST. Validate product_id and stock levels. Trigger alerts when stock falls below threshold. Aggregate changes per warehouse.',
+  order: 'Receive order messages from external system. Map to SAP IDoc format, validate business rules (credit check, duplicates), split large orders into batches, route rush orders for priority processing.',
+  b2b: 'Set up B2B integration with Walmart. Use EDIFACT ORDERS D96A standard. Configure partner parameters for interchange control. Map incoming ORDERS to internal order format.',
+};
+
+// ---- Init ----
+function init() {
+  // Nav
+  $$('.nav-item[data-view]').forEach(item => item.addEventListener('click', () => navigate(item.dataset.view)));
+
+  // Connection
+  $('#connect-btn').addEventListener('click', connect);
+  $('#disconnect-btn').addEventListener('click', () => { disconnect(); notice('Disconnected.', 'info'); });
+
+  // New task
+  $('#new-task-btn').addEventListener('click', () => {
+    S.wizard = { step: 1, planId: null, plan: null, compile: null };
+    $('#agent-scenario').value = '';
+    hide($('#deploy-output'));
+    navigate('v-agent');
+    showStep(1);
+  });
+
+  // Mode
+  $('#mode-auto').addEventListener('click', () => { S.agentMode='auto'; $('#mode-auto').classList.add('active'); $('#mode-guided').classList.remove('active'); $('#mode-desc').textContent='Full autonomous: propose → decompose → compile → review.'; });
+  $('#mode-guided').addEventListener('click', () => { S.agentMode='guided'; $('#mode-guided').classList.add('active'); $('#mode-auto').classList.remove('active'); $('#mode-desc').textContent='Step-by-step with review at each stage.'; });
+
+  // Examples
+  $$('[data-example]').forEach(btn => btn.addEventListener('click', () => { const k=btn.dataset.example; if(EXAMPLES[k]) $('#agent-scenario').value=EXAMPLES[k]; }));
+
+  // Wizard nav
+  $('#analyze-btn').addEventListener('click', analyze);
+  $('#plan-back').addEventListener('click', () => showStep(1));
+  $('#plan-build').addEventListener('click', buildFromPlan);
+  $('#build-back').addEventListener('click', () => showStep(2));
+  $('#build-review').addEventListener('click', showReview);
+  $('#build-download').addEventListener('click', () => { if(S.wizard.compile) downloadJson(`${S.wizard.compile.id||S.wizard.compile.artifact_id||'design'}.json`, S.wizard.compile); });
+  $('#review-back').addEventListener('click', () => showStep(3));
+  $('#review-deploy').addEventListener('click', deploy);
+  $('#review-download').addEventListener('click', () => { if(S.wizard.compile) downloadJson(`${S.wizard.compile.id||S.wizard.compile.artifact_id||'design'}.json`, S.wizard.compile); });
+
+  // B2B
+  $('#b2b-propose').addEventListener('click', proposeB2B);
+  $('#b2b-compile').addEventListener('click', compileB2B);
+  $('#b2b-download').addEventListener('click', () => { if(S.b2b.compile) downloadJson('b2b-design.json', S.b2b.compile); });
+
+  // APIs
+  $('#api-build').addEventListener('click', buildAPI);
+  $('#api-download').addEventListener('click', () => { const el=$('#api-result-content'); if(el) downloadJson('api-design.json', JSON.parse(el.textContent)); });
+
+  // Messaging
+  $('#msg-jms').addEventListener('click', () => { S.msgPattern='jms-retry'; $('#msg-jms').classList.add('active'); $('#msg-solace').classList.remove('active'); });
+  $('#msg-solace').addEventListener('click', () => { S.msgPattern='solace'; $('#msg-solace').classList.add('active'); $('#msg-jms').classList.remove('active'); });
+  $('#msg-build').addEventListener('click', buildMsg);
+  $('#msg-download').addEventListener('click', () => { const el=$('#msg-result-content'); if(el) downloadJson('messaging-pattern.json', JSON.parse(el.textContent)); });
+
+  // Templates
+  $('#refresh-tpl').addEventListener('click', loadTemplates);
+  $('#tpl-back').addEventListener('click', () => { hide($('#tpl-detail')); show($('#tpl-list')); });
+  $('#tpl-build').addEventListener('click', () => { const params={}; $$('.tpl-p').forEach(el=>params[el.dataset.p]=el.value); notice(`Building template with: ${JSON.stringify(params)}`); });
+
+  // Inventory
+  $('#refresh-pkgs').addEventListener('click', loadPackages);
+
+  // Activity
+  $('#refresh-runs').addEventListener('click', loadRuns);
+
+  // Connections
+  $('#check-conn').addEventListener('click', loadConn);
+  $('#diagnose').addEventListener('click', async () => { try { const d=await api('/v1/diagnostics'); $('#conn-output').textContent=JSON.stringify(d,null,2); $('#conn-output').style.display='block'; } catch(e){notice(e.message,'error');} });
+
+  // Settings
+  $('#set-backend').value = S.backend;
+  $('#set-token').value = S.token;
+
+  updateConn();
+}
+
+async function autoConnect() {
+  if (!S.token) return;
+  S.backend = localStorage.getItem('cpi_backend') || 'http://127.0.0.1:8000';
+  $('#set-backend').value = S.backend;
+  $('#set-token').value = S.token;
+  try {
+    const me = await api('/v1/me');
+    S.principal = me; S.connected = true;
+    updateConn();
+    await loadAll();
+  } catch { /* silent */ }
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { init(); autoConnect(); });
+else { init(); autoConnect(); }
+</script>
+</body>
+</html>

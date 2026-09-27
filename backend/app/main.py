@@ -23,6 +23,9 @@ from .diagnostics import preflight
 from .messaging_designer import MessagingDesign, compile_messaging
 from .order_designer import OrderDesignSpec, compile_orders, propose_orders
 from .designer import ScenarioRequest, CompileRequest, propose as propose_design, compile_design, references
+from .b2b_designer import B2BSpec, propose_b2b, compile_b2b
+from .decomposer import DecompositionResult, propose_decomposition
+from .templates_lib import TemplateForm, IntegrationTemplate, list_templates, get_template, template_catalog
 
 
 def create_app(settings=None):
@@ -239,6 +242,40 @@ def create_app(settings=None):
     @app.post('/v1/scenarios/compile')
     def scenario_compile(body: DescriptionRequest, principal=Depends(operator)):
         return describe(body, principal, agent, planner)
+
+    @app.post('/v1/solutions/decompose')
+    def decompose_solution(body: dict, principal=Depends(operator)):
+        goal = body.get('goal', '')
+        package_id = body.get('package_id', identifier(principal))
+        if not goal or len(goal) < 10:
+            raise HTTPException(400, 'Provide a goal (min 10 chars)')
+        result = propose_decomposition(goal, package_id, planner)
+        return result
+
+    @app.post('/v1/b2b/propose')
+    def propose_b2b(body: dict, principal=Depends(operator)):
+        spec = B2BSpec.model_validate(body)
+        spec.package_id = spec.package_id or identifier(principal)
+        result = propose_b2b(spec, principal)
+        return result
+
+    @app.post('/v1/b2b/compile')
+    def compile_b2b_endpoint(body: dict, principal=Depends(operator)):
+        spec = B2BSpec.model_validate(body)
+        spec.package_id = spec.package_id or identifier(principal)
+        result = compile_b2b(spec, principal)
+        return result
+
+    @app.get('/v1/templates')
+    def templates_list():
+        return {'templates': [t.model_dump() for t in list_templates()]}
+
+    @app.get('/v1/templates/{template_id}')
+    def template_detail(template_id: str):
+        tpl = get_template(template_id)
+        if not tpl:
+            raise HTTPException(404, 'Template not found')
+        return tpl.model_dump()
 
     @app.get('/v1/channels')
     def channel_status(principal=Depends(authenticated)):
