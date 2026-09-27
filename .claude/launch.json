@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "cpi-copilot",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8080"],
+      "cwd": "C:/Users/Pavan.Kolla/OneDrive - Proclink/Desktop/SAP/SAP_CPI_CO-pilot/extension",
+      "port": 8080
+    }
+  ]
+}
